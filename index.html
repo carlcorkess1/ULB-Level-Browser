@@ -4,1840 +4,3648 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ULB: Level Browser</title>
-    
-    <!-- Favicon for GitHub Pages / Netlify -->
+
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
 
-    <!-- Press Start 2P Web Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Press Start 2P', monospace, cursive, sans-serif;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Press Start 2P', monospace, cursive, sans-serif;
+    }
 
-        body {
-            background-color: #ff0000;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            transition: background-color 0.3s ease;
-        }
+    body {
+        background-color: #ff0000;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        transition: background-color 0.3s ease;
+    }
 
-        /* WORLDS TAB ACTIVE STATE */
-        body.worlds-active {
-            background-color: #0066ff !important;
-        }
+    body.worlds-active {
+        background-color: #0066ff !important;
+    }
 
-        body.worlds-active .side-pillar {
-            background-color: #3385ff;
-        }
+    body.worlds-active .side-pillar {
+        background-color: #3385ff;
+    }
 
-        body.worlds-active .pillar-inner {
-            border-color: #0044cc;
-        }
+    body.worlds-active .pillar-inner {
+        border-color: #0044cc;
+    }
 
-        body.worlds-active .nav-btn.tab-btn.active {
-            background: #0066ff;
-            border-color: #ffffff;
-            color: #ffffff;
-        }
+    body.worlds-active .nav-btn.tab-btn.active {
+        background: #0066ff;
+        border-color: #ffffff;
+        color: #ffffff;
+    }
 
-        /* DARK MODE STYLES */
-        body.dark-mode-active {
-            background-color: #1e293b !important;
-        }
+    body.dark-mode-active {
+        background-color: #1e293b !important;
+    }
 
-        body.dark-mode-active .side-pillar {
-            background-color: #334155;
-        }
+    body.dark-mode-active .side-pillar {
+        background-color: #334155;
+    }
 
-        body.dark-mode-active .pillar-inner {
-            background: #000000;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.7) 12%, transparent 13%);
-            background-size: 32px 32px;
-            background-position: 0 0;
-            border-color: #334155;
-        }
+    body.dark-mode-active .pillar-inner {
+        background: #000000;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.7) 12%, transparent 13%);
+        background-size: 32px 32px;
+        background-position: 0 0;
+        border-color: #334155;
+    }
 
-        /* Navigation Header */
-        .header-nav {
-            background: #000;
-            color: white;
-            width: 100%;
-            max-width: 1200px;
-            padding: 12px 20px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            flex-wrap: nowrap;
-        }
+    .header-nav {
+        background: #000;
+        color: white;
+        width: 100%;
+        max-width: 1200px;
+        padding: 12px 20px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        flex-wrap: nowrap;
+    }
 
-        .nav-left, .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
+    .nav-left, .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
 
-        /* Site Logo Header */
-        .site-logo {
-            height: 32px;
-            max-width: 100%;
-            object-fit: contain;
-            image-rendering: pixelated;
-            display: block;
-        }
+    .site-logo {
+        height: 32px;
+        max-width: 100%;
+        object-fit: contain;
+        image-rendering: pixelated;
+        display: block;
+    }
 
-        .nav-btn {
-            background: #222;
-            color: #fff;
-            border: 2px solid #444;
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            white-space: nowrap;
-        }
+    .nav-btn {
+        background: #222;
+        color: #fff;
+        border: 2px solid #444;
+        padding: 8px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        text-decoration: none;
+        white-space: nowrap;
+    }
 
-        .nav-btn:hover {
-            background: #ff3333;
-            border-color: #ff3333;
-        }
+    .nav-btn:hover {
+        background: #ff3333;
+        border-color: #ff3333;
+    }
 
-        .nav-btn.tab-btn.active {
-            background: #ff3333;
-            border-color: #ffffff;
-            color: #ffffff;
-            font-weight: bold;
-        }
+    .nav-btn.tab-btn.active {
+        background: #ff3333;
+        border-color: #ffffff;
+        color: #ffffff;
+        font-weight: bold;
+    }
 
-        /* Yellow More & Search Trigger Buttons */
-        .more-btn, .search-trigger-btn {
-            background: #ffcc00;
-            color: #000;
-            border: 2px solid #e6b800;
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            font-weight: bold;
-            white-space: nowrap;
-        }
+    .more-btn, .search-trigger-btn {
+        background: #ffcc00;
+        color: #000;
+        border: 2px solid #e6b800;
+        padding: 8px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        text-decoration: none;
+        font-weight: bold;
+        white-space: nowrap;
+    }
 
-        .more-btn:hover, .search-trigger-btn:hover {
-            background: #ffe066;
-            border-color: #ffffff;
-        }
+    .more-btn:hover, .search-trigger-btn:hover {
+        background: #ffe066;
+        border-color: #ffffff;
+    }
 
-        /* PC Search Button (Visible on PC, Hidden on Mobile) */
+    .pc-search-btn-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: #111;
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 8px 12px;
+        width: 100%;
+        gap: 12px;
+        position: relative;
+        min-width: 0;
+        flex-wrap: wrap;
+    }
+
+    .search-modal-card {
+        max-width: 650px;
+        border-color: #ffcc00 !important;
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.4) !important;
+    }
+
+    .search-modal-title {
+        font-size: 1rem;
+        color: #ffcc00;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .custom-dropdown {
+        position: relative;
+        flex-shrink: 0;
+        user-select: none;
+        z-index: 50;
+    }
+
+    .dropdown-selected {
+        background: #222;
+        color: #ffcc00;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 0.65rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .dropdown-selected::after {
+        content: "▼";
+        font-size: 0.5rem;
+        color: #ffcc00;
+    }
+
+    .dropdown-options {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        background: #111;
+        border: 2px solid #ffcc00;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+        width: 200px;
+        z-index: 100;
+        overflow: hidden;
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    .dropdown-options.show {
+        display: block;
+    }
+
+    .dropdown-header {
+        padding: 6px 10px;
+        font-size: 0.55rem;
+        color: #888;
+        background: #000;
+        border-bottom: 1px solid #333;
+        text-transform: uppercase;
+    }
+
+    .dropdown-option {
+        padding: 8px 10px;
+        font-size: 0.6rem;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .dropdown-option:hover {
+        background: #ff3333;
+        color: #fff;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+    }
+
+    .search-box input {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 6px;
+        outline: none;
+        color: #fff;
+        padding: 8px 10px;
+        width: 100%;
+        font-size: 0.65rem;
+    }
+
+    .search-box input:focus {
+        border-color: #ff3333;
+    }
+
+    .dual-search-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-grow: 1;
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .input-label {
+        font-size: 0.55rem;
+        color: #ffcc00;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .input-group input {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 6px;
+        outline: none;
+        color: #fff;
+        padding: 8px 10px;
+        width: 100%;
+        min-width: 0;
+        font-size: 0.55rem;
+    }
+
+    .input-group input:focus {
+        border-color: #ff3333;
+    }
+
+    .upload-trigger-btn {
+        background-color: #ff3333;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+
+    .upload-trigger-btn:hover {
+        background-color: #cc0000;
+    }
+
+    .container {
+        display: flex;
+        width: 100%;
+        max-width: 1200px;
+        height: 75vh;
+        max-height: 620px;
+        gap: 20px;
+    }
+
+    .side-pillar {
+        width: 180px;
+        flex-shrink: 0;
+        background-color: #ff6666;
+        padding: 12px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        transition: background-color 0.3s ease;
+    }
+
+    .pillar-inner {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, #3b82f6 0%, #60a5fa 40%, #15803d 40%, #16a34a 75%, #78350f 75%, #451a03 100%);
+        border: 4px solid #cc3333;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        image-rendering: pixelated;
+        transition: all 0.3s ease;
+    }
+
+    .content-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .grid-header-bar {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .grid-header-bar .dropdown-options {
+        right: 0;
+        left: auto;
+    }
+
+    .mobile-chart-wrapper {
+        display: none;
+        width: 100%;
+    }
+
+    .level-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        width: 100%;
+        height: 80%;
+    }
+
+    .level-card {
+        background-color: #000000;
+        border-radius: 30px;
+        padding: 20px;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.2s, border-color 0.2s;
+        border: 3px solid transparent;
+    }
+
+    .level-card.active-card {
+        cursor: pointer;
+    }
+
+    .level-card.active-card:hover {
+        transform: scale(1.02);
+        border-color: #ff3333;
+    }
+
+    body.worlds-active .level-card.active-card:hover {
+        border-color: #0066ff;
+    }
+
+    .level-card.empty-card {
+        opacity: 0.3;
+        border: 2px dashed #444;
+    }
+
+    .level-title {
+        font-size: 0.95rem;
+        color: #ffffff;
+        word-break: break-word;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .level-sub-creator {
+        font-size: 0.6rem;
+        color: #ffcc00;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .pfp-avatar {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid #ffcc00;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+        background-color: #222;
+    }
+
+    .pfp-avatar-large {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ffcc00;
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+        background-color: #222;
+    }
+
+    .profile-header-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .og-badge-icon {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        cursor: pointer;
+        vertical-align: middle;
+        transition: transform 0.2s;
+        display: inline-block;
+    }
+
+    .og-badge-icon:hover {
+        transform: scale(1.25);
+    }
+
+    body.hide-badges-active .og-badge-icon {
+        display: none !important;
+    }
+
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #ffffff;
+        font-size: 1.1rem;
+        user-select: none;
+        margin-top: 5px;
+    }
+
+    .page-arrow {
+        cursor: pointer;
+        padding: 6px 12px;
+        background: #000;
+        border: 2px solid #444;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .page-arrow:hover:not(.disabled) {
+        background: #ff3333;
+        border-color: #ff3333;
+    }
+
+    body.worlds-active .page-arrow:hover:not(.disabled) {
+        background: #0066ff;
+        border-color: #0066ff;
+    }
+
+    .page-arrow.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .footer-notice-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+        text-align: center;
+    }
+
+    .affiliation-notice {
+        font-size: 0.55rem;
+        color: #ffffff;
+        opacity: 0.8;
+        letter-spacing: 0.5px;
+        line-height: 1.3;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .modal-card {
+        background-color: #000;
+        border: 4px solid #ff3333;
+        border-radius: 20px;
+        max-width: 550px;
+        width: 100%;
+        padding: 25px;
+        color: white;
+        position: relative;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    body.worlds-active .modal-card {
+        border-color: #0066ff;
+        box-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
+    }
+
+    .close-modal-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #ff3333;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+
+    body.worlds-active .close-modal-btn {
+        background: #0066ff;
+    }
+
+    .modal-thumbnail-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #111;
+        border-radius: 12px;
+        border: 2px solid #444;
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    .modal-thumbnail {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        border-radius: 8px;
+        image-rendering: pixelated;
+        display: block;
+    }
+
+    .modal-title {
+        font-size: 1rem;
+        color: #ffcc00;
+        line-height: 1.4;
+    }
+
+    .modal-meta {
+        font-size: 0.75rem;
+        color: #aaa;
+        line-height: 1.8;
+    }
+
+    .modal-meta span {
+        color: #fff;
+    }
+
+    .clickable-id {
+        color: #ffcc00 !important;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.2s;
+    }
+
+    .clickable-id:hover {
+        color: #ffe066 !important;
+    }
+
+    .creator-link {
+        color: #3b82f6 !important;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .creator-link:hover {
+        color: #60a5fa !important;
+    }
+
+    .modal-description {
+        font-size: 0.75rem;
+        line-height: 1.5;
+        background: #111;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        white-space: pre-line;
+        word-break: break-word;
+        position: relative;
+    }
+
+    .modal-description.has-more {
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+    .modal-description.has-more:hover {
+        border-color: #ffcc00;
+    }
+
+    .desc-more-btn {
+        color: #ffcc00;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-left: 6px;
+        white-space: nowrap;
+    }
+
+    .desc-more-btn:hover {
+        color: #ffe066;
+    }
+
+    .modal-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tag-pill {
+        font-size: 0.65rem;
+        background: #ff3333;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    body.worlds-active .tag-pill {
+        background: #0066ff;
+    }
+
+    .more-card, .profile-card, .badge-card, .copied-card, .full-desc-card, .upload-card {
+        border-color: #ffcc00 !important;
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.4) !important;
+    }
+
+    .more-title, .profile-title, .badge-title, .copied-title, .full-desc-title, .upload-title {
+        font-size: 1.1rem;
+        color: #ffcc00;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .more-tab-nav {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        border-bottom: 2px solid #333;
+        padding-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .more-tab-btn {
+        background: #222;
+        color: #fff;
+        border: 1px solid #444;
+        padding: 6px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.6rem;
+        transition: all 0.2s;
+    }
+
+    .more-tab-btn:hover {
+        background: #ffcc00;
+        color: #000;
+    }
+
+    .more-tab-btn.active {
+        background: #ffcc00;
+        color: #000;
+        border-color: #ffcc00;
+        font-weight: bold;
+    }
+
+    .more-tab-content {
+        display: none;
+        max-height: 320px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .more-tab-content.active {
+        display: block;
+    }
+
+    .copied-text {
+        font-size: 0.7rem;
+        line-height: 1.6;
+        color: #fff;
+        text-align: center;
+        background: #111;
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #333;
+    }
+
+    .okay-btn {
+        background: #ffcc00;
+        color: #000;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: bold;
+        align-self: center;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .okay-btn:hover {
+        background: #ffe066;
+        transform: scale(1.05);
+    }
+
+    .upload-options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .upload-option-btn {
+        background: #111;
+        color: #fff;
+        border: 2px solid #ffcc00;
+        padding: 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+        transition: all 0.2s;
+    }
+
+    .upload-option-btn:hover {
+        background: #ffcc00;
+        color: #000;
+        transform: scale(1.02);
+    }
+
+    .profile-section-title {
+        font-size: 0.7rem;
+        color: #ffcc00;
+        margin-top: 10px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #333;
+        padding-bottom: 4px;
+    }
+
+    .badge-preview-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        background: #111;
+        border-radius: 12px;
+        border: 2px solid #333;
+        margin-bottom: 10px;
+    }
+
+    .badge-large-img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        image-rendering: pixelated;
+    }
+
+    .badge-info-text {
+        font-size: 0.7rem;
+        line-height: 1.6;
+        color: #fff;
+        text-align: center;
+        background: #111;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #333;
+    }
+
+    .profile-level-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 320px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .profile-level-item {
+        background: #111;
+        border: 2px solid #333;
+        padding: 10px 14px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .profile-level-item:hover {
+        border-color: #ffcc00;
+        background: #222;
+    }
+
+    .profile-level-name {
+        font-size: 0.75rem;
+        color: #fff;
+    }
+
+    .profile-level-id {
+        font-size: 0.6rem;
+        color: #ffcc00;
+    }
+
+    .rules-list, .credits-list, .updates-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font-size: 0.7rem;
+        line-height: 1.5;
+    }
+
+    .rules-list li, .credits-list li, .updates-list li {
+        background: #111;
+        padding: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #ffcc00;
+    }
+
+    .update-item {
+        background: #111;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 4px solid #ffcc00;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .update-header {
+        font-size: 0.8rem;
+        color: #ffcc00;
+    }
+
+    .update-body {
+        font-size: 0.65rem;
+        color: #fff;
+        line-height: 1.6;
+        white-space: pre-line;
+    }
+
+    .rule-notice {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.6rem;
+        color: #aaa;
+        line-height: 1.4;
+    }
+
+    .rules-footer {
+        font-size: 0.6rem;
+        color: #888;
+        text-align: center;
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .option-item {
+        background: #111;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.7rem;
+    }
+
+    .option-label {
+        color: #fff;
+    }
+
+    .checkbox-container {
+        position: relative;
+        display: inline-block;
+        width: 38px;
+        height: 20px;
+    }
+
+    .checkbox-container input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #444;
+        transition: .3s;
+        border-radius: 20px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #ff3333;
+    }
+
+    body.worlds-active input:checked + .slider {
+        background-color: #0066ff;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(18px);
+    }
+
+    @media (min-width: 851px) {
         .pc-search-btn-wrapper {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
         }
 
-        /* Search Container Section */
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #111;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 8px 12px;
-            width: 100%;
-            gap: 12px;
-            position: relative;
-            min-width: 0;
-            flex-wrap: wrap;
+        .mobile-search-inline {
+            display: none !important;
         }
+    }
 
-        /* Modal Container Adjustments for PC Search Modal */
-        .search-modal-card {
-            max-width: 650px;
-            border-color: #ffcc00 !important;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4) !important;
-        }
-
-        .search-modal-title {
-            font-size: 1rem;
-            color: #ffcc00;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        /* CUSTOM DROPDOWN SYSTEM */
-        .custom-dropdown {
-            position: relative;
-            flex-shrink: 0;
-            user-select: none;
-            z-index: 50;
-        }
-
-        .dropdown-selected {
-            background: #222;
-            color: #ffcc00;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 8px 10px;
-            font-size: 0.65rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-
-        .dropdown-selected::after {
-            content: "▼";
-            font-size: 0.5rem;
-            color: #ffcc00;
-        }
-
-        .dropdown-options {
-            display: none;
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            background: #111;
-            border: 2px solid #ffcc00;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
-            width: 200px;
-            z-index: 100;
-            overflow: hidden;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .dropdown-options.show {
-            display: block;
-        }
-
-        .dropdown-header {
-            padding: 6px 10px;
-            font-size: 0.55rem;
-            color: #888;
-            background: #000;
-            border-bottom: 1px solid #333;
-            text-transform: uppercase;
-        }
-
-        .dropdown-option {
-            padding: 8px 10px;
-            font-size: 0.6rem;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .dropdown-option:hover {
-            background: #ff3333;
-            color: #fff;
-        }
-
-        /* Single Input Mode */
-        .search-box {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            position: relative;
-            z-index: 1;
-            min-width: 0;
-        }
-
-        .search-box input {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            outline: none;
-            color: #fff;
-            padding: 8px 10px;
-            width: 100%;
-            font-size: 0.65rem;
-        }
-
-        .search-box input:focus {
-            border-color: #ff3333;
-        }
-
-        /* Dual Input Mode (Level + By) */
-        .dual-search-box {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-grow: 1;
-            position: relative;
-            z-index: 1;
-            min-width: 0;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .input-label {
-            font-size: 0.55rem;
-            color: #ffcc00;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .input-group input {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            outline: none;
-            color: #fff;
-            padding: 8px 10px;
-            width: 100%;
-            min-width: 0;
-            font-size: 0.55rem;
-        }
-
-        .input-group input:focus {
-            border-color: #ff3333;
-        }
-
-        .upload-trigger-btn {
-            background-color: #ff3333;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.2s;
-            white-space: nowrap;
-        }
-
-        .upload-trigger-btn:hover {
-            background-color: #cc0000;
-        }
-
-        /* Main Display Layout */
-        .container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            height: 75vh;
-            max-height: 620px;
-            gap: 20px;
-        }
-
-        .side-pillar {
-            width: 180px;
-            flex-shrink: 0;
-            background-color: #ff6666;
-            padding: 12px;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s ease;
-        }
-
-        .pillar-inner {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, #3b82f6 0%, #60a5fa 40%, #15803d 40%, #16a34a 75%, #78350f 75%, #451a03 100%);
-            border: 4px solid #cc3333;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            image-rendering: pixelated;
-            transition: all 0.3s ease;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        /* Above-Grid Action Bar for PC Chart Controls */
-        .grid-header-bar {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .grid-header-bar .dropdown-options {
-            right: 0;
-            left: auto;
-        }
-
-        /* Mobile specific Chart Container */
-        .mobile-chart-wrapper {
-            display: none;
-            width: 100%;
-        }
-
-        .level-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            width: 100%;
-            height: 80%;
-        }
-
-        .level-card {
-            background-color: #000000;
-            border-radius: 30px;
-            padding: 20px;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.2s, border-color 0.2s;
-            border: 3px solid transparent;
-        }
-
-        .level-card.active-card {
-            cursor: pointer;
-        }
-
-        .level-card.active-card:hover {
-            transform: scale(1.02);
-            border-color: #ff3333;
-        }
-
-        body.worlds-active .level-card.active-card:hover {
-            border-color: #0066ff;
-        }
-
-        .level-card.empty-card {
-            opacity: 0.3;
-            border: 2px dashed #444;
-        }
-
-        .level-title {
-            font-size: 0.95rem;
-            color: #ffffff;
-            word-break: break-word;
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        .level-sub-creator {
-            font-size: 0.6rem;
-            color: #ffcc00;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* OG Badge Styling */
-        .og-badge-icon {
-            width: 22px;
-            height: 22px;
-            object-fit: contain;
-            image-rendering: pixelated;
-            cursor: pointer;
-            vertical-align: middle;
-            transition: transform 0.2s;
-            display: inline-block;
-        }
-
-        .og-badge-icon:hover {
-            transform: scale(1.25);
-        }
-
-        body.hide-badges-active .og-badge-icon {
+    @media (max-width: 850px) {
+        .pc-search-btn-wrapper {
             display: none !important;
         }
 
-        /* Pagination Navigation */
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: #ffffff;
-            font-size: 1.1rem;
-            user-select: none;
-            margin-top: 5px;
+        .mobile-search-inline {
+            display: flex !important;
         }
 
-        .page-arrow {
-            cursor: pointer;
-            padding: 6px 12px;
-            background: #000;
-            border: 2px solid #444;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .page-arrow:hover:not(.disabled) {
-            background: #ff3333;
-            border-color: #ff3333;
-        }
-
-        body.worlds-active .page-arrow:hover:not(.disabled) {
-            background: #0066ff;
-            border-color: #0066ff;
-        }
-
-        .page-arrow.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* Disclaimer Footer Text Below List */
-        .footer-notice-container {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-top: 6px;
-            text-align: center;
-        }
-
-        .affiliation-notice {
-            font-size: 0.55rem;
-            color: #ffffff;
-            opacity: 0.8;
-            letter-spacing: 0.5px;
-            line-height: 1.3;
-        }
-
-        /* General Modal Styling */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background-color: #000;
-            border: 4px solid #ff3333;
-            border-radius: 20px;
-            max-width: 550px;
-            width: 100%;
-            padding: 25px;
-            color: white;
-            position: relative;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        body.worlds-active .modal-card {
-            border-color: #0066ff;
-            box-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
-        }
-
-        .close-modal-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff3333;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        body.worlds-active .close-modal-btn {
-            background: #0066ff;
-        }
-
-        .modal-thumbnail-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #111;
-            border-radius: 12px;
-            border: 2px solid #444;
+        body {
             padding: 10px;
-            overflow: hidden;
         }
 
-        .modal-thumbnail {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            border-radius: 8px;
-            image-rendering: pixelated;
-            display: block;
-        }
-
-        .modal-title {
-            font-size: 1rem;
-            color: #ffcc00;
-            line-height: 1.4;
-        }
-
-        .modal-meta {
-            font-size: 0.75rem;
-            color: #aaa;
-            line-height: 1.8;
-        }
-
-        .modal-meta span {
-            color: #fff;
-        }
-
-        .clickable-id {
-            color: #ffcc00 !important;
-            cursor: pointer;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-
-        .clickable-id:hover {
-            color: #ffe066 !important;
-        }
-
-        .creator-link {
-            color: #3b82f6 !important;
-            cursor: pointer;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-
-        .creator-link:hover {
-            color: #60a5fa !important;
-        }
-
-        /* Description Container with Truncation Styling */
-        .modal-description {
-            font-size: 0.75rem;
-            line-height: 1.5;
-            background: #111;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            white-space: pre-line;
-            word-break: break-word;
-            position: relative;
-        }
-
-        .modal-description.has-more {
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-
-        .modal-description.has-more:hover {
-            border-color: #ffcc00;
-        }
-
-        .desc-more-btn {
-            color: #ffcc00;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-left: 6px;
-            white-space: nowrap;
-        }
-
-        .desc-more-btn:hover {
-            color: #ffe066;
-        }
-
-        .modal-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .tag-pill {
-            font-size: 0.65rem;
-            background: #ff3333;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        body.worlds-active .tag-pill {
-            background: #0066ff;
-        }
-
-        /* More Modal & Badges Custom Styling */
-        .more-card, .profile-card, .badge-card, .copied-card, .full-desc-card {
-            border-color: #ffcc00 !important;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4) !important;
-        }
-
-        .more-title, .profile-title, .badge-title, .copied-title, .full-desc-title {
-            font-size: 1.1rem;
-            color: #ffcc00;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        /* Sub-Nav Buttons for More Modal */
-        .more-tab-nav {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .more-tab-btn {
-            background: #222;
-            color: #fff;
-            border: 1px solid #444;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.6rem;
-            transition: all 0.2s;
-        }
-
-        .more-tab-btn:hover {
-            background: #ffcc00;
-            color: #000;
-        }
-
-        .more-tab-btn.active {
-            background: #ffcc00;
-            color: #000;
-            border-color: #ffcc00;
-            font-weight: bold;
-        }
-
-        .more-tab-content {
-            display: none;
-            max-height: 320px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .more-tab-content.active {
-            display: block;
-        }
-
-        .copied-text {
-            font-size: 0.7rem;
-            line-height: 1.6;
-            color: #fff;
-            text-align: center;
-            background: #111;
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #333;
-        }
-
-        .okay-btn {
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: bold;
-            align-self: center;
-            transition: all 0.2s;
-        }
-
-        .okay-btn:hover {
-            background: #ffe066;
-            transform: scale(1.05);
-        }
-
-        .profile-section-title {
-            font-size: 0.7rem;
-            color: #ffcc00;
-            margin-top: 10px;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #333;
-            padding-bottom: 4px;
-        }
-
-        .badge-preview-container {
-            display: flex;
-            justify-content: center;
+        .header-nav {
+            flex-direction: column;
             align-items: center;
+            gap: 12px;
             padding: 15px;
-            background: #111;
-            border-radius: 12px;
-            border: 2px solid #333;
+        }
+
+        .nav-left, .nav-right {
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .site-logo {
+            height: 28px;
+            margin-bottom: 4px;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .custom-dropdown {
+            width: 100%;
+        }
+
+        .dropdown-selected {
+            justify-content: space-between;
+        }
+
+        .dropdown-options {
+            width: 100%;
+        }
+
+        .dual-search-box {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .mobile-chart-wrapper {
+            display: block;
+        }
+
+        .grid-header-bar {
+            display: none;
+        }
+
+        .side-pillar {
+            display: none;
+        }
+
+        .container {
+            height: auto;
+            max-height: none;
+        }
+
+        .level-grid {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+
+        .level-card {
+            min-height: 120px;
+        }
+
+        .footer-notice-container {
+            margin-top: 10px;
             margin-bottom: 10px;
         }
-
-        .badge-large-img {
-            width: 72px;
-            height: 72px;
-            object-fit: contain;
-            image-rendering: pixelated;
-        }
-
-        .badge-info-text {
-            font-size: 0.7rem;
-            line-height: 1.6;
-            color: #fff;
-            text-align: center;
-            background: #111;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #333;
-        }
-
-        .profile-level-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 320px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .profile-level-item {
-            background: #111;
-            border: 2px solid #333;
-            padding: 10px 14px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .profile-level-item:hover {
-            border-color: #ffcc00;
-            background: #222;
-        }
-
-        .profile-level-name {
-            font-size: 0.75rem;
-            color: #fff;
-        }
-
-        .profile-level-id {
-            font-size: 0.6rem;
-            color: #ffcc00;
-        }
-
-        .rules-list, .credits-list, .updates-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            font-size: 0.7rem;
-            line-height: 1.5;
-        }
-
-        .rules-list li, .credits-list li, .updates-list li {
-            background: #111;
-            padding: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #ffcc00;
-        }
-
-        .update-item {
-            background: #111;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #ffcc00;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .update-header {
-            font-size: 0.8rem;
-            color: #ffcc00;
-        }
-
-        .update-body {
-            font-size: 0.65rem;
-            color: #fff;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-
-        .rule-notice {
-            display: block;
-            margin-top: 6px;
-            font-size: 0.6rem;
-            color: #aaa;
-            line-height: 1.4;
-        }
-
-        .rules-footer {
-            font-size: 0.6rem;
-            color: #888;
-            text-align: center;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        /* Options Toggle Switch */
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .option-item {
-            background: #111;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.7rem;
-        }
-
-        .option-label {
-            color: #fff;
-        }
-
-        .checkbox-container {
-            position: relative;
-            display: inline-block;
-            width: 38px;
-            height: 20px;
-        }
-
-        .checkbox-container input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #444;
-            transition: .3s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #ff3333;
-        }
-
-        body.worlds-active input:checked + .slider {
-            background-color: #0066ff;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(18px);
-        }
-
-        /* DESKTOP (PC) VS MOBILE SEARCH DISPLAY RULES */
-        @media (min-width: 851px) {
-            .pc-search-btn-wrapper {
-                display: flex;
-            }
-            .mobile-search-inline {
-                display: none !important;
-            }
-        }
-
-        @media (max-width: 850px) {
-            .pc-search-btn-wrapper {
-                display: none !important;
-            }
-            .mobile-search-inline {
-                display: flex !important;
-            }
-
-            body {
-                padding: 10px;
-            }
-
-            .header-nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
-                padding: 15px;
-            }
-
-            .nav-left, .nav-right {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .site-logo {
-                height: 28px;
-                margin-bottom: 4px;
-            }
-
-            .search-container {
-                width: 100%;
-                max-width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .custom-dropdown {
-                width: 100%;
-            }
-
-            .dropdown-selected {
-                justify-content: space-between;
-            }
-
-            .dropdown-options {
-                width: 100%;
-            }
-
-            .dual-search-box {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .input-group {
-                width: 100%;
-            }
-
-            .mobile-chart-wrapper {
-                display: block;
-            }
-
-            .grid-header-bar {
-                display: none;
-            }
-
-            .side-pillar { display: none; }
-            .container { height: auto; max-height: none; }
-            .level-grid { grid-template-columns: 1fr; height: auto; }
-            .level-card { min-height: 120px; }
-            .footer-notice-container { margin-top: 10px; margin-bottom: 10px; }
-        }
-    </style>
+    }
+</style>
 </head>
+
 <body>
 
-    <!-- Header Nav -->
-    <div class="header-nav">
-        <div class="nav-left">
-            <img src="https://www.image2url.com/r2/default/images/1786188882795-bffbeadc-3371-4d11-b357-540852ec6bab.png" alt="ULB: Level Browser" class="site-logo" id="siteLogoImg" />
-            <button class="nav-btn tab-btn active" id="tabLevelsBtn" onclick="switchMainTab('levels')">Levels</button>
-            <button class="nav-btn tab-btn" id="tabWorldsBtn" onclick="switchMainTab('worlds')">Worlds</button>
-            <button class="more-btn" onclick="openMoreModal('rules')">More</button>
+<div class="header-nav">
+    <div class="nav-left">
+
+        <img
+            src="https://www.image2url.com/r2/default/images/1786188882795-bffbeadc-3371-4d11-b357-540852ec6bab.png"
+            alt="ULB: Level Browser"
+            class="site-logo"
+            id="siteLogoImg"
+        />
+
+        <button
+            class="nav-btn tab-btn active"
+            id="tabLevelsBtn"
+            onclick="switchMainTab('levels')"
+        >
+            Levels
+        </button>
+
+        <button
+            class="nav-btn tab-btn"
+            id="tabWorldsBtn"
+            onclick="switchMainTab('worlds')"
+        >
+            Worlds
+        </button>
+
+        <button class="more-btn" onclick="openMoreModal('rules')">
+            More
+        </button>
+    </div>
+
+    <div class="pc-search-btn-wrapper">
+        <button
+            class="search-trigger-btn"
+            id="pcSearchModalBtn"
+            onclick="openSearchModal()"
+        >
+            🔍 Search
+        </button>
+    </div>
+
+    <div class="search-container mobile-search-inline">
+
+        <div class="custom-dropdown" id="searchDropdownMobile">
+
+            <div
+                class="dropdown-selected searchDropdownSelectedClass"
+                onclick="toggleDropdown(event, 'searchDropdownOptionsMobile')"
+            >
+                All Fields
+            </div>
+
+            <div
+                class="dropdown-options"
+                id="searchDropdownOptionsMobile"
+            >
+
+                <div
+                    class="dropdown-option"
+                    onclick="selectSearchMode('all', 'All Fields')"
+                >
+                    All Fields
+                </div>
+
+                <div
+                    class="dropdown-option optSearchIdClass"
+                    onclick="selectSearchMode('id', 'Level ID')"
+                >
+                    Level ID
+                </div>
+
+                <div
+                    class="dropdown-option optSearchTitleClass"
+                    onclick="selectSearchMode('title', 'Level Title')"
+                >
+                    Level Title
+                </div>
+
+                <div
+                    class="dropdown-option"
+                    onclick="selectSearchMode('creator', 'Creator')"
+                >
+                    Creator
+                </div>
+
+                <div
+                    class="dropdown-option"
+                    onclick="selectSearchMode('title_creator', 'Title + Creator')"
+                >
+                    Title + Creator
+                </div>
+            </div>
         </div>
 
-        <!-- PC ONLY SEARCH BUTTON -->
-        <div class="pc-search-btn-wrapper">
-            <button class="search-trigger-btn" id="pcSearchModalBtn" onclick="openSearchModal()">🔍 Search</button>
+        <div class="search-box singleSearchBoxClass">
+            <input
+                type="text"
+                class="searchInputClass"
+                placeholder="Search levels..."
+                oninput="syncAndSearch(this)"
+            />
         </div>
 
-        <!-- MOBILE ONLY INLINE SEARCH CONTAINER -->
-        <div class="search-container mobile-search-inline">
-            <div class="custom-dropdown" id="searchDropdownMobile">
-                <div class="dropdown-selected searchDropdownSelectedClass" onclick="toggleDropdown(event, 'searchDropdownOptionsMobile')">All Fields</div>
-                <div class="dropdown-options" id="searchDropdownOptionsMobile">
-                    <div class="dropdown-option" onclick="selectSearchMode('all', 'All Fields')">All Fields</div>
-                    <div class="dropdown-option optSearchIdClass" onclick="selectSearchMode('id', 'Level ID')">Level ID</div>
-                    <div class="dropdown-option optSearchTitleClass" onclick="selectSearchMode('title', 'Level Title')">Level Title</div>
-                    <div class="dropdown-option" onclick="selectSearchMode('creator', 'Creator')">Creator</div>
-                    <div class="dropdown-option" onclick="selectSearchMode('title_creator', 'Title + Creator')">Title + Creator</div>
+        <div
+            class="dual-search-box dualSearchBoxClass"
+            style="display: none;"
+        >
+            <div class="input-group">
+                <span class="input-label labelTitleInputClass">
+                    Level:
+                </span>
+
+                <input
+                    type="text"
+                    class="searchTitleInputClass"
+                    placeholder="name"
+                    oninput="syncAndSearch(this)"
+                />
+            </div>
+
+            <div class="input-group">
+                <span class="input-label">
+                    By:
+                </span>
+
+                <input
+                    type="text"
+                    class="searchCreatorInputClass"
+                    placeholder="creator"
+                    oninput="syncAndSearch(this)"
+                />
+            </div>
+        </div>
+
+        <div class="mobile-chart-wrapper">
+
+            <div class="custom-dropdown" id="mobileChartDropdown">
+
+                <div
+                    class="dropdown-selected chart-selected-label"
+                    onclick="toggleDropdown(event, 'mobileChartDropdownOptions')"
+                >
+                    Chart: None
+                </div>
+
+                <div
+                    class="dropdown-options"
+                    id="mobileChartDropdownOptions"
+                >
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('none', 'Chart: None')"
+                    >
+                        Chart: None
+                    </div>
+
+                    <div class="dropdown-header">
+                        Sort Website Uploads
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('oldest_site', 'Oldest Uploads')"
+                    >
+                        Oldest Uploads
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('newest_site', 'Newest Uploads')"
+                    >
+                        Newest Uploads
+                    </div>
+
+                    <div class="dropdown-header">
+                        Sort IDs
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('oldest_id', 'Oldest ID')"
+                    >
+                        Oldest ID
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('newest_id', 'Newest ID')"
+                    >
+                        Newest ID
+                    </div>
+
+                    <div class="dropdown-header">
+                        Filter by Tag
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_boss', 'Tag: Boss')"
+                    >
+                        Tag: Boss
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_adventure', 'Tag: Adventure')"
+                    >
+                        Tag: Adventure
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_kaizo', 'Tag: Kaizo')"
+                    >
+                        Tag: Kaizo
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_music', 'Tag: Music')"
+                    >
+                        Tag: Music
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_short', 'Tag: Short')"
+                    >
+                        Tag: Short
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_long', 'Tag: Long')"
+                    >
+                        Tag: Long
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_collab', 'Tag: Collab')"
+                    >
+                        Tag: Collab
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_traditional', 'Tag: Traditional')"
+                    >
+                        Tag: Traditional
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-right">
+
+        <button
+            class="upload-trigger-btn"
+            onclick="openUploadModal()"
+        >
+            Upload
+        </button>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="uploadModal"
+    onclick="closeModal(event, 'uploadModal')"
+>
+    <div class="modal-card upload-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('uploadModal')"
+        >
+            X
+        </button>
+
+        <div class="upload-title">
+            SUBMIT TYPE
+        </div>
+
+        <div class="upload-options-container">
+
+            <a
+                href="https://forms.gle/h2cAXERnTEt76WWDA"
+                target="_blank"
+                class="upload-option-btn"
+                onclick="hideModal('uploadModal')"
+            >
+                Upload Level
+            </a>
+
+            <a
+                href="https://forms.gle/sGuQZeNJSkm2fHvE6"
+                target="_blank"
+                class="upload-option-btn"
+                onclick="hideModal('uploadModal')"
+            >
+                Upload World
+            </a>
+        </div>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="searchModal"
+    onclick="closeModal(event, 'searchModal')"
+>
+    <div class="modal-card search-modal-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('searchModal')"
+        >
+            X
+        </button>
+
+        <div class="search-modal-title">
+            SEARCH BROWSER
+        </div>
+
+        <div class="search-container">
+
+            <div class="custom-dropdown" id="searchDropdownPc">
+
+                <div
+                    class="dropdown-selected searchDropdownSelectedClass"
+                    onclick="toggleDropdown(event, 'searchDropdownOptionsPc')"
+                >
+                    All Fields
+                </div>
+
+                <div
+                    class="dropdown-options"
+                    id="searchDropdownOptionsPc"
+                >
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectSearchMode('all', 'All Fields')"
+                    >
+                        All Fields
+                    </div>
+
+                    <div
+                        class="dropdown-option optSearchIdClass"
+                        onclick="selectSearchMode('id', 'Level ID')"
+                    >
+                        Level ID
+                    </div>
+
+                    <div
+                        class="dropdown-option optSearchTitleClass"
+                        onclick="selectSearchMode('title', 'Level Title')"
+                    >
+                        Level Title
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectSearchMode('creator', 'Creator')"
+                    >
+                        Creator
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectSearchMode('title_creator', 'Title + Creator')"
+                    >
+                        Title + Creator
+                    </div>
                 </div>
             </div>
 
             <div class="search-box singleSearchBoxClass">
-                <input type="text" class="searchInputClass" placeholder="Search levels..." oninput="syncAndSearch(this)" />
+
+                <input
+                    type="text"
+                    class="searchInputClass"
+                    placeholder="Search levels..."
+                    oninput="syncAndSearch(this)"
+                />
             </div>
 
-            <div class="dual-search-box dualSearchBoxClass" style="display: none;">
+            <div
+                class="dual-search-box dualSearchBoxClass"
+                style="display: none;"
+            >
+
                 <div class="input-group">
-                    <span class="input-label labelTitleInputClass">Level:</span>
-                    <input type="text" class="searchTitleInputClass" placeholder="name" oninput="syncAndSearch(this)" />
+
+                    <span class="input-label labelTitleInputClass">
+                        Level:
+                    </span>
+
+                    <input
+                        type="text"
+                        class="searchTitleInputClass"
+                        placeholder="name"
+                        oninput="syncAndSearch(this)"
+                    />
                 </div>
+
                 <div class="input-group">
-                    <span class="input-label">By:</span>
-                    <input type="text" class="searchCreatorInputClass" placeholder="creator" oninput="syncAndSearch(this)" />
+
+                    <span class="input-label">
+                        By:
+                    </span>
+
+                    <input
+                        type="text"
+                        class="searchCreatorInputClass"
+                        placeholder="creator"
+                        oninput="syncAndSearch(this)"
+                    />
                 </div>
             </div>
+        </div>
 
-            <div class="mobile-chart-wrapper">
-                <div class="custom-dropdown" id="mobileChartDropdown">
-                    <div class="dropdown-selected chart-selected-label" onclick="toggleDropdown(event, 'mobileChartDropdownOptions')">Chart: None</div>
-                    <div class="dropdown-options" id="mobileChartDropdownOptions">
-                        <div class="dropdown-option" onclick="selectChart('none', 'Chart: None')">Chart: None</div>
-                        <div class="dropdown-header">Sort Website Uploads</div>
-                        <div class="dropdown-option" onclick="selectChart('oldest_site', 'Oldest Uploads')">Oldest Uploads</div>
-                        <div class="dropdown-option" onclick="selectChart('newest_site', 'Newest Uploads')">Newest Uploads</div>
-                        <div class="dropdown-header">Sort IDs</div>
-                        <div class="dropdown-option" onclick="selectChart('oldest_id', 'Oldest ID')">Oldest ID</div>
-                        <div class="dropdown-option" onclick="selectChart('newest_id', 'Newest ID')">Newest ID</div>
-                        <div class="dropdown-header">Filter by Tag</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_boss', 'Tag: Boss')">Tag: Boss</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_adventure', 'Tag: Adventure')">Tag: Adventure</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_kaizo', 'Tag: Kaizo')">Tag: Kaizo</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_music', 'Tag: Music')">Tag: Music</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_short', 'Tag: Short')">Tag: Short</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_long', 'Tag: Long')">Tag: Long</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_collab', 'Tag: Collab')">Tag: Collab</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_traditional', 'Tag: Traditional')">Tag: Traditional</div>
+        <button
+            class="okay-btn"
+            onclick="hideModal('searchModal')"
+        >
+            Done
+        </button>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="side-pillar">
+        <div class="pillar-inner"></div>
+    </div>
+
+    <div class="content-area">
+
+        <div class="grid-header-bar">
+
+            <div class="custom-dropdown" id="pcChartDropdown">
+
+                <div
+                    class="dropdown-selected chart-selected-label"
+                    onclick="toggleDropdown(event, 'pcChartDropdownOptions')"
+                >
+                    Chart: None
+                </div>
+
+                <div
+                    class="dropdown-options"
+                    id="pcChartDropdownOptions"
+                >
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('none', 'Chart: None')"
+                    >
+                        Chart: None
+                    </div>
+
+                    <div class="dropdown-header">
+                        Sort Website Uploads
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('oldest_site', 'Oldest Uploads')"
+                    >
+                        Oldest Uploads
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('newest_site', 'Newest Uploads')"
+                    >
+                        Newest Uploads
+                    </div>
+
+                    <div class="dropdown-header">
+                        Sort IDs
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('oldest_id', 'Oldest ID')"
+                    >
+                        Oldest ID
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('newest_id', 'Newest ID')"
+                    >
+                        Newest ID
+                    </div>
+
+                    <div class="dropdown-header">
+                        Filter by Tag
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_boss', 'Tag: Boss')"
+                    >
+                        Tag: Boss
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_adventure', 'Tag: Adventure')"
+                    >
+                        Tag: Adventure
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_kaizo', 'Tag: Kaizo')"
+                    >
+                        Tag: Kaizo
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_music', 'Tag: Music')"
+                    >
+                        Tag: Music
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_short', 'Tag: Short')"
+                    >
+                        Tag: Short
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_long', 'Tag: Long')"
+                    >
+                        Tag: Long
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_collab', 'Tag: Collab')"
+                    >
+                        Tag: Collab
+                    </div>
+
+                    <div
+                        class="dropdown-option"
+                        onclick="selectChart('tag_traditional', 'Tag: Traditional')"
+                    >
+                        Tag: Traditional
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="nav-right">
-            <a href="https://forms.gle/h2cAXERnTEt76WWDA" target="_blank" class="upload-trigger-btn">Upload Entry</a>
+        <div class="level-grid" id="levelGrid"></div>
+
+        <div class="pagination">
+
+            <span
+                class="page-arrow"
+                id="prevPageBtn"
+                onclick="changePage(-1)"
+            >
+                &lt;
+            </span>
+
+            <span
+                class="page-number"
+                id="pageNumber"
+            >
+                1
+            </span>
+
+            <span
+                class="page-arrow"
+                id="nextPageBtn"
+                onclick="changePage(1)"
+            >
+                &gt;
+            </span>
+        </div>
+
+        <div class="footer-notice-container">
+
+            <div class="affiliation-notice">
+                ULB: Level Browser is not affiliated by BVB Games!
+            </div>
+
+            <div class="affiliation-notice">
+                Ultimate Level Maker / Builder is made by Berneyvonbean under BVB Games!
+            </div>
         </div>
     </div>
 
-    <!-- PC SEARCH MODAL -->
-    <div class="modal-overlay" id="searchModal" onclick="closeModal(event, 'searchModal')">
-        <div class="modal-card search-modal-card">
-            <button class="close-modal-btn" onclick="hideModal('searchModal')">X</button>
-            <div class="search-modal-title">SEARCH BROWSER</div>
-            
-            <div class="search-container">
-                <div class="custom-dropdown" id="searchDropdownPc">
-                    <div class="dropdown-selected searchDropdownSelectedClass" onclick="toggleDropdown(event, 'searchDropdownOptionsPc')">All Fields</div>
-                    <div class="dropdown-options" id="searchDropdownOptionsPc">
-                        <div class="dropdown-option" onclick="selectSearchMode('all', 'All Fields')">All Fields</div>
-                        <div class="dropdown-option optSearchIdClass" onclick="selectSearchMode('id', 'Level ID')">Level ID</div>
-                        <div class="dropdown-option optSearchTitleClass" onclick="selectSearchMode('title', 'Level Title')">Level Title</div>
-                        <div class="dropdown-option" onclick="selectSearchMode('creator', 'Creator')">Creator</div>
-                        <div class="dropdown-option" onclick="selectSearchMode('title_creator', 'Title + Creator')">Title + Creator</div>
-                    </div>
+    <div class="side-pillar">
+        <div class="pillar-inner"></div>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="levelModal"
+    onclick="closeModal(event, 'levelModal')"
+>
+    <div class="modal-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('levelModal')"
+        >
+            X
+        </button>
+
+        <div
+            class="modal-thumbnail-wrapper"
+            id="modalThumbWrapper"
+        >
+
+            <img
+                class="modal-thumbnail"
+                id="modalThumb"
+                src=""
+                alt="Thumbnail"
+            />
+        </div>
+
+        <div
+            class="modal-title"
+            id="modalTitle"
+        ></div>
+
+        <div class="modal-meta">
+
+            <div>
+                CREATOR:
+                <span id="modalCreator"></span>
+            </div>
+
+            <div id="modalIdContainer">
+
+                <span id="modalIdLabel">
+                    LEVEL ID:
+                </span>
+
+                <span
+                    id="modalId"
+                    class="clickable-id"
+                    title="Click to copy ID"
+                ></span>
+            </div>
+
+            <div
+                id="modalWorldsMeta"
+                style="display: none;"
+            >
+
+                WORLDS:
+
+                <span
+                    id="modalWorldsCount"
+                    style="color:#ffcc00; font-weight:bold;"
+                ></span>
+            </div>
+        </div>
+
+        <div
+            class="modal-description"
+            id="modalDesc"
+        ></div>
+
+        <div
+            class="modal-tags"
+            id="modalTags"
+        ></div>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="fullDescModal"
+    onclick="closeModal(event, 'fullDescModal')"
+>
+    <div class="modal-card full-desc-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('fullDescModal')"
+        >
+            X
+        </button>
+
+        <div class="full-desc-title">
+            DESCRIPTION
+        </div>
+
+        <div
+            class="modal-description"
+            id="fullDescModalText"
+            style="max-height: 350px; overflow-y: auto;"
+        ></div>
+
+        <button
+            class="okay-btn"
+            onclick="hideModal('fullDescModal')"
+        >
+            Close
+        </button>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="profileModal"
+    onclick="closeModal(event, 'profileModal')"
+>
+    <div class="modal-card profile-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('profileModal')"
+        >
+            X
+        </button>
+
+        <div class="profile-header-wrapper">
+
+            <img
+                id="profilePfp"
+                class="pfp-avatar-large"
+                src=""
+                alt="Profile Picture"
+            />
+
+            <div
+                class="profile-title"
+                id="profileName"
+            >
+                USER PROFILE
+            </div>
+        </div>
+
+        <div
+            class="profile-level-list"
+            id="profileLevelList"
+        ></div>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="badgeModal"
+    onclick="closeModal(event, 'badgeModal')"
+>
+    <div class="modal-card badge-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('badgeModal')"
+        >
+            X
+        </button>
+
+        <div
+            class="badge-title"
+            id="badgeModalTitle"
+        >
+            BADGE
+        </div>
+
+        <div class="badge-preview-container">
+
+            <img
+                id="badgeModalImg"
+                src=""
+                alt="Badge"
+                class="badge-large-img"
+            />
+        </div>
+
+        <div
+            class="badge-info-text"
+            id="badgeModalDescription"
+        ></div>
+    </div>
+</div>
+
+<div
+    class="modal-overlay"
+    id="moreModal"
+    onclick="closeModal(event, 'moreModal')"
+>
+    <div class="modal-card more-card">
+
+        <button
+            class="close-modal-btn"
+            onclick="hideModal('moreModal')"
+        >
+            X
+        </button>
+
+        <div class="more-title">
+            MORE
+        </div>
+
+        <div class="more-tab-nav">
+
+            <button
+                class="more-tab-btn"
+                id="tabBtn-rules"
+                onclick="switchMoreTab('rules')"
+            >
+                Rules
+            </button>
+
+            <button
+                class="more-tab-btn"
+                id="tabBtn-credits"
+                onclick="switchMoreTab('credits')"
+            >
+                Credits
+            </button>
+
+            <button
+                class="more-tab-btn"
+                id="tabBtn-updates"
+                onclick="switchMoreTab('updates')"
+            >
+                Updates
+            </button>
+
+            <button
+                class="more-tab-btn"
+                id="tabBtn-options"
+                onclick="switchMoreTab('options')"
+            >
+                Options
+            </button>
+        </div>
+
+        <div
+            class="more-tab-content"
+            id="tabContent-rules"
+        >
+
+            <ul class="rules-list">
+
+                <li>
+                    1. No Lil Timmy Levels
+
+                    <span class="rule-notice">
+                        (Notice: A "Little Timmy level" is a community slang term for a poorly designed, chaotic, or low-effort stage.)
+                    </span>
+                </li>
+
+                <li>
+                    2. No Bullying / Harassment Levels
+                </li>
+
+                <li>
+                    3. No Inappropriate / NSFW Levels
+                </li>
+
+                <li>
+                    4. The Level has to be Normal and Good Deco
+                </li>
+
+                <li>
+                    5. No Trolling (fake levels that don't exist are not allowed)
+                </li>
+
+                <li>
+                    6. Stolen Levels are not allowed
+                </li>
+            </ul>
+
+            <div class="rules-footer">
+                More rules may be added as needed
+            </div>
+        </div>
+
+        <div
+            class="more-tab-content"
+            id="tabContent-credits"
+        >
+
+            <ul class="credits-list">
+
+                <li>
+                    CarlULB: Made the Website!
+                </li>
+
+                <li>
+                    Berneyvonbean: for Ultimate Level Builder
+                </li>
+            </ul>
+        </div>
+
+        <div
+            class="more-tab-content"
+            id="tabContent-updates"
+        >
+
+            <div class="update-item">
+
+                <div class="update-header">
+                    Version 1.5.0
                 </div>
 
-                <div class="search-box singleSearchBoxClass">
-                    <input type="text" class="searchInputClass" placeholder="Search levels..." oninput="syncAndSearch(this)" />
+                <div class="update-body">The 1.5.0 Update has officially arrived!
+
+Added:
+
+Submitting World-Maps
+
+Profile Pictures
+
+Added Certain new Levels while working on the Update!
+
+
+Added & Removed:
+
++#3 4! |3♡3| !d3@5 feature (Cancelled but will be showen in the Cancelled/Prototype Features Video!)
+
+
+Changed:
+
+bug fixes
+
+
+Those who submitted the first 4 worlds will be awarded a New Badge named: World-Map OG!</div>
+
+            </div>
+
+            <div
+                class="update-item"
+                style="margin-top: 10px;"
+            >
+
+                <div class="update-header">
+                    Version 1.2.0
                 </div>
 
-                <div class="dual-search-box dualSearchBoxClass" style="display: none;">
-                    <div class="input-group">
-                        <span class="input-label labelTitleInputClass">Level:</span>
-                        <input type="text" class="searchTitleInputClass" placeholder="name" oninput="syncAndSearch(this)" />
-                    </div>
-                    <div class="input-group">
-                        <span class="input-label">By:</span>
-                        <input type="text" class="searchCreatorInputClass" placeholder="creator" oninput="syncAndSearch(this)" />
-                    </div>
-                </div>
-            </div>
+                <div class="update-body">Added worlds tab for early access for Marthecoolguy's Birthday, but you can't upload world maps for now until 1.5.0
 
-            <button class="okay-btn" onclick="hideModal('searchModal')">Done</button>
-        </div>
-    </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Left Pillar -->
-        <div class="side-pillar">
-            <div class="pillar-inner"></div>
-        </div>
-
-        <!-- Content Area -->
-        <div class="content-area">
-            <div class="grid-header-bar">
-                <div class="custom-dropdown" id="pcChartDropdown">
-                    <div class="dropdown-selected chart-selected-label" onclick="toggleDropdown(event, 'pcChartDropdownOptions')">Chart: None</div>
-                    <div class="dropdown-options" id="pcChartDropdownOptions">
-                        <div class="dropdown-option" onclick="selectChart('none', 'Chart: None')">Chart: None</div>
-                        <div class="dropdown-header">Sort Website Uploads</div>
-                        <div class="dropdown-option" onclick="selectChart('oldest_site', 'Oldest Uploads')">Oldest Uploads</div>
-                        <div class="dropdown-option" onclick="selectChart('newest_site', 'Newest Uploads')">Newest Uploads</div>
-                        <div class="dropdown-header">Sort IDs</div>
-                        <div class="dropdown-option" onclick="selectChart('oldest_id', 'Oldest ID')">Oldest ID</div>
-                        <div class="dropdown-option" onclick="selectChart('newest_id', 'Newest ID')">Newest ID</div>
-                        <div class="dropdown-header">Filter by Tag</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_boss', 'Tag: Boss')">Tag: Boss</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_adventure', 'Tag: Adventure')">Tag: Adventure</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_kaizo', 'Tag: Kaizo')">Tag: Kaizo</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_music', 'Tag: Music')">Tag: Music</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_short', 'Tag: Short')">Tag: Short</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_long', 'Tag: Long')">Tag: Long</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_collab', 'Tag: Collab')">Tag: Collab</div>
-                        <div class="dropdown-option" onclick="selectChart('tag_traditional', 'Tag: Traditional')">Tag: Traditional</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="level-grid" id="levelGrid"></div>
-
-            <div class="pagination">
-                <span class="page-arrow" id="prevPageBtn" onclick="changePage(-1)">&lt;</span>
-                <span class="page-number" id="pageNumber">1</span>
-                <span class="page-arrow" id="nextPageBtn" onclick="changePage(1)">&gt;</span>
-            </div>
-
-            <div class="footer-notice-container">
-                <div class="affiliation-notice">
-                    ULB: Level Browser is not affiliated by BVB Games!
-                </div>
-                <div class="affiliation-notice">
-                    Ultimate Level Maker / Builder is made by Berneyvonbean under BVB Games!
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Pillar -->
-        <div class="side-pillar">
-            <div class="pillar-inner"></div>
-        </div>
-    </div>
-
-    <!-- Level Details Modal -->
-    <div class="modal-overlay" id="levelModal" onclick="closeModal(event, 'levelModal')">
-        <div class="modal-card">
-            <button class="close-modal-btn" onclick="hideModal('levelModal')">X</button>
-            <div class="modal-thumbnail-wrapper" id="modalThumbWrapper">
-                <img class="modal-thumbnail" id="modalThumb" src="" alt="Thumbnail" />
-            </div>
-            <div class="modal-title" id="modalTitle"></div>
-            <div class="modal-meta">
-                <div>CREATOR: <span id="modalCreator"></span></div>
-                <div id="modalIdContainer"><span id="modalIdLabel">LEVEL ID:</span> <span id="modalId" class="clickable-id" title="Click to copy ID"></span></div>
-                <div id="modalWorldsMeta" style="display: none;">WORLDS: <span id="modalWorldsCount" style="color:#ffcc00; font-weight:bold;"></span></div>
-            </div>
-            <div class="modal-description" id="modalDesc"></div>
-            <div class="modal-tags" id="modalTags"></div>
-        </div>
-    </div>
-
-    <!-- Full Description Expand Modal -->
-    <div class="modal-overlay" id="fullDescModal" onclick="closeModal(event, 'fullDescModal')">
-        <div class="modal-card full-desc-card">
-            <button class="close-modal-btn" onclick="hideModal('fullDescModal')">X</button>
-            <div class="full-desc-title">DESCRIPTION</div>
-            <div class="modal-description" id="fullDescModalText" style="max-height: 350px; overflow-y: auto;"></div>
-            <button class="okay-btn" onclick="hideModal('fullDescModal')">Close</button>
-        </div>
-    </div>
-
-    <!-- Creator Profile Modal -->
-    <div class="modal-overlay" id="profileModal" onclick="closeModal(event, 'profileModal')">
-        <div class="modal-card profile-card">
-            <button class="close-modal-btn" onclick="hideModal('profileModal')">X</button>
-            <div class="profile-title" id="profileName">USER PROFILE</div>
-            <div class="profile-level-list" id="profileLevelList"></div>
-        </div>
-    </div>
-
-    <!-- OG Badge Information Modal -->
-    <div class="modal-overlay" id="badgeModal" onclick="closeModal(event, 'badgeModal')">
-        <div class="modal-card badge-card">
-            <button class="close-modal-btn" onclick="hideModal('badgeModal')">X</button>
-            <div class="badge-title">OG BADGE</div>
-            <div class="badge-preview-container">
-                <img id="badgeModalImg" src="https://www.image2url.com/r2/default/images/1786118955607-6926cb16-97da-4e24-8fe2-ba738b7dae6f.png" alt="OG Badge" class="badge-large-img" />
-            </div>
-            <div class="badge-info-text">
-                This Badge is awarded to people who published levels to the website before it's Initial Release
-            </div>
-        </div>
-    </div>
-
-    <!-- Combined More Modal -->
-    <div class="modal-overlay" id="moreModal" onclick="closeModal(event, 'moreModal')">
-        <div class="modal-card more-card">
-            <button class="close-modal-btn" onclick="hideModal('moreModal')">X</button>
-            <div class="more-title">MORE</div>
-
-            <div class="more-tab-nav">
-                <button class="more-tab-btn" id="tabBtn-rules" onclick="switchMoreTab('rules')">Rules</button>
-                <button class="more-tab-btn" id="tabBtn-credits" onclick="switchMoreTab('credits')">Credits</button>
-                <button class="more-tab-btn" id="tabBtn-updates" onclick="switchMoreTab('updates')">Updates</button>
-                <button class="more-tab-btn" id="tabBtn-options" onclick="switchMoreTab('options')">Options</button>
-            </div>
-
-            <!-- TAB 1: RULES -->
-            <div class="more-tab-content" id="tabContent-rules">
-                <ul class="rules-list">
-                    <li>
-                        1. No Lil Timmy Levels
-                        <span class="rule-notice">(Notice: A "Little Timmy level" is a community slang term for a poorly designed, chaotic, or low-effort stage.)</span>
-                    </li>
-                    <li>2. No Bullying / Harassment Levels</li>
-                    <li>3. No Inappropriate / NSFW Levels</li>
-                    <li>4. The Level has to be Normal and Good Deco</li>
-                    <li>5. No Trolling (fake levels that don't exist are not allowed)</li>
-                    <li>6. Stolen Levels are not allowed</li>
-                </ul>
-                <div class="rules-footer">More rules may be added as needed</div>
-            </div>
-
-            <!-- TAB 2: CREDITS -->
-            <div class="more-tab-content" id="tabContent-credits">
-                <ul class="credits-list">
-                    <li>CarlULB: Made the Website!</li>
-                    <li>Berneyvonbean: for Ultimate Level Builder</li>
-                </ul>
-            </div>
-
-            <!-- TAB 3: UPDATES -->
-            <div class="more-tab-content" id="tabContent-updates">
-                <div class="update-item">
-                    <div class="update-header">Version 1.2.0</div>
-                    <div class="update-body">Added worlds tab for early access for Marthecoolguy's Birthday, but you can't upload world maps for now until 1.5.0
 Added Dark Mode to Options!</div>
-                </div>
-                <div class="update-item" style="margin-top: 10px;">
-                    <div class="update-header">Version 1.1.0</div>
-                    <div class="update-body">Added the More Tab, in the place of the Rules Tab
+            </div>
 
-- Credits
-- Updates
-- Options
+            <div
+                class="update-item"
+                style="margin-top: 10px;"
+            >
+
+                <div class="update-header">
+                    Version 1.1.0
+                </div>
+
+                <div class="update-body">Added the More Tab, in the place of the Rules Tab
+
+Credits
+
+Updates
+
+Options
+
 
 Changed the name to "ULB: Level Browser"!</div>
-                </div>
             </div>
+        </div>
 
-            <!-- TAB 4: OPTIONS -->
-            <div class="more-tab-content" id="tabContent-options">
-                <div class="options-container">
-                    <div class="option-item">
-                        <span class="option-label">Hide Badges</span>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="hideBadgesToggle" onchange="toggleHideBadges(this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
+        <div
+            class="more-tab-content"
+            id="tabContent-options"
+        >
 
-                    <div class="option-item">
-                        <span class="option-label">Dark Mode</span>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode(this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
+            <div class="options-container">
+
+                <div class="option-item">
+
+                    <span class="option-label">
+                        Hide Badges
+                    </span>
+
+                    <label class="checkbox-container">
+
+                        <input
+                            type="checkbox"
+                            id="hideBadgesToggle"
+                            onchange="toggleHideBadges(this.checked)"
+                        />
+
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="option-item">
+
+                    <span class="option-label">
+                        Dark Mode
+                    </span>
+
+                    <label class="checkbox-container">
+
+                        <input
+                            type="checkbox"
+                            id="darkModeToggle"
+                            onchange="toggleDarkMode(this.checked)"
+                        />
+
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Custom Copied ID Notification Modal -->
-    <div class="modal-overlay" id="copiedModal" onclick="closeModal(event, 'copiedModal')">
-        <div class="modal-card copied-card">
-            <div class="copied-title">Copied!</div>
-            <div class="copied-text">
-                Paste it on Ultimate Level Builder (you can't paste it in mobile but you can if you are on PC)
-            </div>
-            <button class="okay-btn" onclick="hideModal('copiedModal')">Okay</button>
+<div
+    class="modal-overlay"
+    id="copiedModal"
+    onclick="closeModal(event, 'copiedModal')"
+>
+    <div class="modal-card copied-card">
+
+        <div class="copied-title">
+            Copied!
         </div>
+
+        <div class="copied-text">
+            Paste it on Ultimate Level Builder (you can't paste it in mobile but you can if you are on PC)
+        </div>
+
+        <button
+            class="okay-btn"
+            onclick="hideModal('copiedModal')"
+        >
+            Okay
+        </button>
     </div>
+</div>
 
-    <script>
-        const PAGE_SIZE = 4;
-        let currentPage = 1;
-        let currentMainTab = 'levels';
-        let currentFilteredLevels = [];
-        let currentSearchMode = 'all';
-        let currentChartMode = 'none';
+<script>
+    const PAGE_SIZE = 4;
 
-        const LOGO_LEVELS_URL = "https://www.image2url.com/r2/default/images/1786188882795-bffbeadc-3371-4d11-b357-540852ec6bab.png";
-        const LOGO_WORLDS_URL = "https://www.image2url.com/r2/default/images/1786276260629-ad4e07ad-dc45-4d73-998b-fbf0ed1f538f.png";
+    let currentPage = 1;
+    let currentMainTab = 'levels';
+    let currentFilteredLevels = [];
+    let currentSearchMode = 'all';
+    let currentChartMode = 'none';
 
-        const DEFAULT_OG_BADGE_URL = "https://www.image2url.com/r2/default/images/1786118955607-6926cb16-97da-4e24-8fe2-ba738b7dae6f.png";
-        
-        const SPECIAL_CREATOR_BADGES = {};
+    const LOGO_LEVELS_URL =
+        "https://www.image2url.com/r2/default/images/1786188882795-bffbeadc-3371-4d11-b357-540852ec6bab.png";
 
-        const OG_CREATORS = ["abobus228", "unbwill", "toño", "failed boy", "isporik pc 3", "myfirsttry", "marthecoolguy", "marquise94"];
+    const LOGO_WORLDS_URL =
+        "https://www.image2url.com/r2/default/images/1786276260629-ad4e07ad-dc45-4d73-998b-fbf0ed1f538f.png";
 
-        const CREATOR_ALIASES = {
-            "marquise94": "Marthecoolguy"
-        };
+    const DEFAULT_OG_BADGE_URL =
+        "https://www.image2url.com/r2/default/images/1786118955607-6926cb16-97da-4e24-8fe2-ba738b7dae6f.png";
 
-        const DEFAULT_LEVELS = [
+    const WORLD_MAP_OG_BADGE_URL =
+        "https://www.image2url.com/r2/default/images/1788437755548-8a857fdf-d494-4acd-a5af-02e39d95f54d.png";
+
+    const DEFAULT_PROFILE_PFP =
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
+    const PROFILE_PICTURES = {
+        "marthecoolguy":
+            "https://www.image2url.com/r2/default/images/1786733146031-ccc88851-e54d-44d1-9e23-58b62620893c.jpg",
+
+        "marquise94":
+            "https://www.image2url.com/r2/default/images/1786733146031-ccc88851-e54d-44d1-9e23-58b62620893c.jpg",
+
+        "ocelote":
+            "https://www.image2url.com/r2/default/images/1788355293627-d2a13d48-909a-418b-99c5-12f71e8fb874.webp"
+    };
+
+    /*
+     * EXISTING SPECIAL BADGES ARE ALL PRESERVED.
+     */
+    const SPECIAL_CREATOR_BADGES = {
+
+        "marquise94": [
             {
-                title: "Spider Crab Boss Fight",
-                description: "the one who started whole enemy boss (currently dead) series",
-                creator: "abobus228",
-                id: "678267",
-                tags: ["short", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786031759880-30d52002-bd15-493d-a214-2a12ce943d65.png"
-            },
-            {
-                title: "Germinacidos Reupload",
-                description: "No Description",
-                creator: "Isporik Pc 3",
-                id: "739360",
-                tags: ["kaizo"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786099398302-a05fca79-0a1b-4cbb-a7d4-872ad914a0f8.png"
-            },
-            {
-                title: "Megapolis",
-                description: "Megapolis is the first level of the A-1763K Series being made in 4 and a half days. I made the level with some decoration tricks I never used. The Level is mainly easy and fun but it gives so much information about the series.",
-                creator: "Myfirsttry",
-                id: "829700",
-                tags: ["adventure", "long"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786105277398-0970d6dc-4314-4973-b620-805989e60ee7.png"
-            },
-            {
-                title: "Portal of Mana I",
-                description: "Um caçador de recompensas é enviado para caçar magos sombrios ( in Portuguese and Spanish )",
-                creator: "Unbwill",
-                id: "773446",
-                tags: ["adventure", "short"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786108441047-0904cec8-c127-4607-a64d-715f9f5d7ac0.png"
-            },
-            {
-                title: "Portal of Mana X",
-                description: "Ystriz returned … ( in Portuguese and Spanish )",
-                creator: "Unbwill",
-                id: "773454",
-                tags: ["boss", "music"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786112434771-9d6c38f7-9943-4017-ae78-2fa01a1ab22e.png"
-            },
-            {
-                title: "Algae",
-                description: "A level filled with kelp, inspired by Orbit from Geometry Dash. Verified and decorated by Toño, layout by Failed Boy",
-                creator: "Toño & Failed Boy",
-                id: "731119",
-                tags: ["kaizo", "long", "collab"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786029413999-b8fce1a5-de3b-43bd-a5b4-6e7a145bf6c7.png"
-            },
-            {
-                title: "Mythic Cave",
-                description: "A cave-ruins mixed level. Feels like the lush caves from Minecraft.",
-                creator: "Berkerim",
-                id: "720572",
-                tags: ["adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786123514017-6d7d6c3c-4780-4ea0-850f-d731f57d530e.png"
-            },
-            {
-                title: "Flying Ship in The Sky",
-                description: "No Description",
-                creator: "Ambton",
-                id: "634217",
-                tags: ["traditional", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786125425091-1579ba90-aa94-4be3-a7f3-8078ff4423fc.png"
-            },
-            {
-                title: "Sonic Wave",
-                description: "No Description",
-                creator: "Ocelote",
-                id: "200000",
-                tags: ["kaizo"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786135230593-d48cf129-9e1e-4fd6-be08-5e801116a467.png"
-            },
-            {
-                title: "Panic Cavern",
-                description: "A large kaizo located in a gigantic cavern with several secret areas; if you want to beat this level, you'll need a lot of patience",
-                creator: "Failed Boy",
-                id: "775446",
-                tags: ["kaizo"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786187063026-6a5763f0-a520-4156-ae7e-2e52045d660f.png"
-            },
-            {
-                title: "Carbos Lost Relam3 1-3",
-                description: "This is 1-3 of carbos lost relam, after saving vonix boi, they team up together and traverse through the overgrown wasteland of metal",
-                creator: "Marthecoolguy",
-                id: "847100",
-                tags: ["traditional", "adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786191582079-c642c706-4d49-4e60-8941-602ea80d4556.png"
-            },
-            {
-                title: "Carbos Lost Relam3 2-1",
-                description: "Carbo and vonix boi arrived at a new location called prismatic relic, a ancient ruins home of the Rikos, good luck!",
-                creator: "Marthecoolguy",
-                id: "855074",
-                tags: ["traditional", "adventure", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786193170470-b2e04c67-5c58-44fa-9eb7-deb93feeeff9.png"
-            },
-            {
-                title: "Seriopolis Copy",
-                description: "The Official Copy of Absolute Top 0 Kaizo Seriopolis. Made and Playtested in 2 Months. To be Verified by Myfirsttry(Creator) The Level is over 4 Minutes long and it contains 61 Frame Perfects. For Reference,Road Of The Peace(The Current Hardest Level in The Game) only has 19 Frame Perfects. The level is not in a Serie and it is made of 4 sections and 5 checkpoints. Go Verify it and you're the God of Ultimate Level Builder.",
-                creator: "Myfirsttry",
-                id: "786388",
-                tags: ["kaizo", "long"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786201109746-402c0a00-828f-4266-b93a-5c0f451345df.png"
-            },
-            {
-                title: "Margarets Training V2",
-                description: "A level that i made because i wanted to make an au of ulb, now reworked with the new uptade 1.6.1",
-                creator: "ArhonRC65",
-                id: "660077",
-                tags: ["short", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786201765668-260170a1-ef65-42f7-9284-15d12682972a.png"
-            },
-            {
-                title: "Stages From Hell 1",
-                description: "A level consisting of 10 highly difficult stages that require a certain level of skill. You will need some patience to beat this level.",
-                creator: "MysteryIlian114",
-                id: "346352",
-                tags: ["kaizo"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786226911570-d336387f-63bf-4f49-8a1e-370e4c4ffeb5.png"
-            },
-            {
-                title: "Final Boss Be Lik",
-                description: "No Description",
-                creator: "Bot360",
-                id: "861076",
-                tags: ["boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786232346602-15bca54e-6f59-487d-94c9-2f99a13c8112.png"
-            },
-            {
-                title: "The Fire Ruins",
-                description: "The Fire ruins is  the fifth and the last level of ULB Story Mode CP 1 . It's mainly a medium tier non kaizo but it contains some hard gameplay. It comes after the fire factory and we finally go to the Fire Isle Exploration Area. We find a Black Cloud in the sky and it is  a flying depression. The Level is  3 Minutes overall.",
-                creator: "Myfirsttry",
-                id: "754681",
-                tags: ["traditional", "adventure", "long"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786293435162-27dd90b9-9694-475e-a43c-e3628780e603.png"
-            },
-            {
-                title: "LC - Riding The Abyss",
-                description: "This level is a song created by Unbwill for another level called Lacta Company. :D",
-                creator: "Unbwill",
-                id: "872350",
-                tags: ["music"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786302491793-6ec35ea0-4b8b-4c3b-bbab-9ba368e0cd1d.png"
-            },
-            {
-                title: "Cretas House",
-                description: "Enter the MYSTERIOUS house of one creta van cretahammer",
-                creator: "Creta The Silly",
-                id: "532586",
-                tags: ["traditional", "adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786394385323-ab248ca0-5e2c-4343-af1d-a445bc29ca0f.png"
-            },
-            {
-                title: "Trio Kaizo Infinity",
-                description: "Top 15 Level From Kaizo list LOLLLLLLL\nVERY EASY FOR BEGGINERS",
-                creator: "Sasha Krutoy YT2",
-                id: "333616",
-                tags: ["traditional", "kaizo", "long", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786467374149-aa95ecf6-67b6-4262-aead-fb1b6ba1cd5e.png"
-            },
-            {
-                title: "Vs Marthecoolguy",
-                description: "a boss fight against marthecoolguy I guess?",
-                creator: "Beatbeh",
-                id: "807119",
-                tags: ["boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786477609635-6c0c2fcc-f52c-4988-9af0-13e333087a0e.png"
-            },
-            {
-                title: "Oystergamification V1",
-                description: "This level, is a Easy Kaizo tribute to Oystergames-ESP, a recognized creator in the Spanish-speaking  community",
-                creator: "JegaGamePro",
-                id: "748450",
-                tags: ["kaizo", "adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786530549997-748e58b6-478a-474e-a4df-cae8c760e4c9.png"
-            },
-            {
-                title: "The Puzzle Factory",
-                description: "This is a level where you get trapped in a factory filled with puzzles and you had to solve them all",
-                creator: "HUMAIL1266YT",
-                id: "842039",
-                tags: ["short", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786535598921-098b5003-4ec8-4edc-966f-c0e5f230ff78.png"
-            },
-            {
-                title: "Horror House",
-                description: "Um Carbo entra numa casa abandonada pra investigar\n\nA Carbo enters an abandoned house to investigate\n\nUn Carbo entra en una casa abandonada para investigar",
-                creator: "Pelgaz",
-                id: "825819",
-                tags: ["traditional", "adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786540524787-a322c427-b545-4a85-9985-f3ca2de7a9ab.png"
-            },
-            {
-                title: "The Gate",
-                description: "The Gate is the second level of the A-1763K series,coming after Megapolis and Before Great World Of Darkness. The Level is not that important overall but we see a giant fountain there and we are in a fountain opening in the level. After speaking with Germin, Myfirsttry finds some sky artifacts and there's a long parkour section after it. The level was made in just 1 day but we still learn the aftermath will be dark.",
-                creator: "Myfirsttry",
-                id: "835397",
-                tags: ["traditional", "short", "adventure"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786551507619-910fcc40-ba39-4c93-be86-ea15784ae62e.png"
-            },
-            {
-                title: "Cesirs Beetle Mayhem",
-                description: "Welcome to the Mayhem Nest, where you have to fight agnaist various types of beetles and the queen to escape.",
-                creator: "Cesir Oficial",
-                id: "876201",
-                tags: ["short", "adventure", "boss"],
-                thumbnail: "https://www.image2url.com/r2/default/images/1786621579475-de39c7a8-3f27-4c49-a7f5-af1187100e72.png"
+                url: WORLD_MAP_OG_BADGE_URL,
+                name: "World-Map OG",
+                description: "This Badge is awarded to users who submitted the first 4 World-Maps in this site!"
             }
-        ];
+        ],
 
-        const DEFAULT_WORLDS = [
+        "unbwill": [
             {
-                title: "Carbos Lost Relam",
-                description: "Welcome to Carbos Lost Relam! :3",
-                creator: "Marquise94",
-                id: "271962",
-                worldsCount: 5,
-                tags: ["adventure"]
+                url: WORLD_MAP_OG_BADGE_URL,
+                name: "World-Map OG",
+                description: "This Badge is awarded to users who submitted the first 4 World-Maps in this site!"
             }
-        ];
+        ],
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+        "abobus228": [
+            {
+                url: WORLD_MAP_OG_BADGE_URL,
+                name: "World-Map OG",
+                description: "This Badge is awarded to users who submitted the first 4 World-Maps in this site!"
             }
-            return array;
+        ],
+
+        "ambton": [
+            {
+                url: WORLD_MAP_OG_BADGE_URL,
+                name: "World-Map OG",
+                description: "This Badge is awarded to users who submitted the first 4 World-Maps in this site!"
+            }
+        ]
+    };
+
+    /*
+     * EXISTING OG CREATORS ARE ALL PRESERVED.
+     */
+    const OG_CREATORS = [
+        "abobus228",
+        "unbwill",
+        "toño",
+        "failed boy",
+        "isporik pc 3",
+        "myfirsttry",
+        "marthecoolguy",
+        "marquise94"
+    ];
+
+    /*
+     * Marquise94 is an alias of Marthecoolguy.
+     *
+     * Existing entries for BOTH names remain.
+     */
+    const CREATOR_ALIASES = {
+        "marquise94": "Marthecoolguy"
+    };
+
+    const DEFAULT_LEVELS = [
+        {
+            title: "Spider Crab Boss Fight",
+            description: "the one who started whole enemy boss (currently dead) series",
+            creator: "abobus228",
+            id: "678267",
+            tags: ["short", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786031759880-30d52002-bd15-493d-a214-2a12ce943d65.png"
+        },
+        {
+            title: "Germinacidos Reupload",
+            description: "No Description",
+            creator: "Isporik Pc 3",
+            id: "739360",
+            tags: ["kaizo"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786099398302-a05fca79-0a1b-4cbb-a7d4-872ad914a0f8.png"
+        },
+        {
+            title: "Megapolis",
+            description: "Megapolis is the first level of the A-1763K Series being made in 4 and a half days. I made the level with some decoration tricks I never used. The Level is mainly easy and fun but it gives so much information about the series.",
+            creator: "Myfirsttry",
+            id: "829700",
+            tags: ["adventure", "long"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786105277398-0970d6dc-4314-4973-b620-805989e60ee7.png"
+        },
+        {
+            title: "Portal of Mana I",
+            description: "Um caçador de recompensas é enviado para caçar magos sombrios ( in Portuguese and Spanish )",
+            creator: "Unbwill",
+            id: "773446",
+            tags: ["adventure", "short"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786108441047-0904cec8-c127-4607-a64d-715f9f5d7ac0.png"
+        },
+        {
+            title: "Portal of Mana X",
+            description: "Ystriz returned … ( in Portuguese and Spanish )",
+            creator: "Unbwill",
+            id: "773454",
+            tags: ["boss", "music"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786112434771-9d6c38f7-9943-4017-ae78-2fa01a1ab22e.png"
+        },
+        {
+            title: "Algae",
+            description: "A level filled with kelp, inspired by Orbit from Geometry Dash. Verified and decorated by Toño, layout by Failed Boy",
+            creator: "Toño & Failed Boy",
+            id: "731119",
+            tags: ["kaizo", "long", "collab"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786029413999-b8fce1a5-de3b-43bd-a5b4-6e7a145bf6c7.png"
+        },
+        {
+            title: "Mythic Cave",
+            description: "A cave-ruins mixed level. Feels like the lush caves from Minecraft.",
+            creator: "Berkerim",
+            id: "720572",
+            tags: ["adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786123514017-6d7d6c3c-4780-4ea0-850f-d731f57d530e.png"
+        },
+        {
+            title: "Flying Ship in The Sky",
+            description: "No Description",
+            creator: "Ambton",
+            id: "634217",
+            tags: ["traditional", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786125425091-1579ba90-aa94-4be3-a7f3-8078ff4423fc.png"
+        },
+        {
+            title: "Sonic Wave",
+            description: "No Description",
+            creator: "Ocelote",
+            id: "200000",
+            tags: ["kaizo"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786135230593-d48cf129-9e1e-4fd6-be08-5e801116a467.png"
+        },
+        {
+            title: "Panic Cavern",
+            description: "A large kaizo located in a gigantic cavern with several secret areas; if you want to beat this level, you'll need a lot of patience",
+            creator: "Failed Boy",
+            id: "775446",
+            tags: ["kaizo"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786187063026-6a5763f0-a520-4156-ae7e-2e52045d660f.png"
+        },
+        {
+            title: "Carbos Lost Relam3 1-3",
+            description: "This is 1-3 of carbos lost relam, after saving vonix boi, they team up together and traverse through the overgrown wasteland of metal",
+            creator: "Marthecoolguy",
+            id: "847100",
+            tags: ["traditional", "adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786191582079-c642c706-4d49-4e60-8941-602ea80d4556.png"
+        },
+        {
+            title: "Carbos Lost Relam3 2-1",
+            description: "Carbo and vonix boi arrived at a new location called prismatic relic, a ancient ruins home of the Rikos, good luck!",
+            creator: "Marthecoolguy",
+            id: "855074",
+            tags: ["traditional", "adventure", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786193170470-b2e04c67-5c58-44fa-9eb7-deb93feeeff9.png"
+        },
+        {
+            title: "Seriopolis Copy",
+            description: "The Official Copy of Absolute Top 0 Kaizo Seriopolis. Made and Playtested in 2 Months. To be Verified by Myfirsttry(Creator) The Level is over 4 Minutes long and it contains 61 Frame Perfects. For Reference,Road Of The Peace(The Current Hardest Level in The Game) only has 19 Frame Perfects. The level is not in a Serie and it is made of 4 sections and 5 checkpoints. Go Verify it and you're the God of Ultimate Level Builder.",
+            creator: "Myfirsttry",
+            id: "786388",
+            tags: ["kaizo", "long"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786201109746-402c0a00-828f-4266-b93a-5c0f451345df.png"
+        },
+        {
+            title: "Margarets Training V2",
+            description: "A level that i made because i wanted to make an au of ulb, now reworked with the new uptade 1.6.1",
+            creator: "ArhonRC65",
+            id: "660077",
+            tags: ["short", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786201765668-260170a1-ef65-42f7-9284-15d12682972a.png"
+        },
+        {
+            title: "Stages From Hell 1",
+            description: "A level consisting of 10 highly difficult stages that require a certain level of skill. You will need some patience to beat this level.",
+            creator: "MysteryIlian114",
+            id: "346352",
+            tags: ["kaizo"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786226911570-d336387f-63bf-4f49-8a1e-370e4c4ffeb5.png"
+        },
+        {
+            title: "Final Boss Be Lik",
+            description: "No Description",
+            creator: "Bot360",
+            id: "861076",
+            tags: ["boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786232346602-15bca54e-6f59-487d-94c9-2f99a13c8112.png"
+        },
+        {
+            title: "The Fire Ruins",
+            description: "The Fire ruins is  the fifth and the last level of ULB Story Mode CP 1 . It's mainly a medium tier non kaizo but it contains some hard gameplay. It comes after the fire factory and we finally go to the Fire Isle Exploration Area. We find a Black Cloud in the sky and it is  a flying depression. The Level is  3 Minutes overall.",
+            creator: "Myfirsttry",
+            id: "754681",
+            tags: ["traditional", "adventure", "long"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786293435162-27dd90b9-9694-475e-a43c-e3628780e603.png"
+        },
+        {
+            title: "LC - Riding The Abyss",
+            description: "This level is a song created by Unbwill for another level called Lacta Company. :D",
+            creator: "Unbwill",
+            id: "872350",
+            tags: ["music"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786302491793-6ec35ea0-4b8b-4c3b-bbab-9ba368e0cd1d.png"
+        },
+        {
+            title: "Cretas House",
+            description: "Enter the MYSTERIOUS house of one creta van cretahammer",
+            creator: "Creta The Silly",
+            id: "532586",
+            tags: ["traditional", "adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786394385323-ab248ca0-5e2c-4343-af1d-a445bc29ca0f.png"
+        },
+        {
+            title: "Trio Kaizo Infinity",
+            description: "Top 15 Level From Kaizo list LOLLLLLLL\nVERY EASY FOR BEGGINERS",
+            creator: "Sasha Krutoy YT2",
+            id: "333616",
+            tags: ["traditional", "kaizo", "long", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786467374149-aa95ecf-67b6-4262-aead-fb1b6ba1cd5e.png"
+        },
+        {
+            title: "Vs Marthecoolguy",
+            description: "a boss fight against marthecoolguy I guess?",
+            creator: "Beatbeh",
+            id: "807119",
+            tags: ["boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786477609635-6c0c2fcc-f52c-4988-9af0-13e333087a0e.png"
+        },
+        {
+            title: "Oystergamification V1",
+            description: "This level, is a Easy Kaizo tribute to Oystergames-ESP, a recognized creator in the Spanish-speaking  community",
+            creator: "JegaGamePro",
+            id: "748450",
+            tags: ["kaizo", "adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786530549997-748e58b6-478a-474e-a4df-cae8c760e4c9.png"
+        },
+        {
+            title: "The Puzzle Factory",
+            description: "This is a level where you get trapped in a factory filled with puzzles and you had to solve them all",
+            creator: "HUMAIL1266YT",
+            id: "842039",
+            tags: ["short", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786535598921-098b5003-4ec8-4edc-966f-c0e5f230ff78.png"
+        },
+        {
+            title: "Horror House",
+            description: "Um Carbo entra numa casa abandonada pra investigar\n\nA Carbo enters an abandoned house to investigate\n\nUn Carbo entra en una casa abandonada para investigar",
+            creator: "Pelgaz",
+            id: "825819",
+            tags: ["traditional", "adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786540524787-a322c427-b545-4a85-9985-f3ca2de7a9ab.png"
+        },
+        {
+            title: "The Gate",
+            description: "The Gate is the second level of the A-1763K series,coming after Megapolis and Before Great World Of Darkness. The Level is not that important overall but we see a giant fountain there and we are in a fountain opening in the level. After speaking with Germin, Myfirsttry finds some sky artifacts and there's a long parkour section after it. The level was made in just 1 day but we still learn the aftermath will be dark.",
+            creator: "Myfirsttry",
+            id: "835397",
+            tags: ["traditional", "short", "adventure"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786551507619-910fcc40-ba39-4c93-be86-ea15784ae62e.png"
+        },
+        {
+            title: "Cesirs Beetle Mayhem",
+            description: "Welcome to the Mayhem Nest, where you have to fight agnaist various types of beetles and the queen to escape.",
+            creator: "Cesir Oficial",
+            id: "876201",
+            tags: ["short", "adventure", "boss"],
+            thumbnail: "https://www.image2url.com/r2/default/images/1786621579475-de39c7a8-3f27-4c49-a7f5-af1187100e72.png"
+        }
+    ];
+
+    const DEFAULT_WORLDS = [
+        {
+            title: "Carbos Lost Relam",
+            description: "Welcome to Carbos Lost Relam! :3",
+            creator: "Marquise94",
+            id: "271962",
+            worldsCount: 5,
+            tags: ["adventure"]
+        },
+        {
+            title: "The Lacta Company",
+            description: "A World Created By Unbwill -Canon for The Portal of Mana Universe-\n-------------------------\nA Man Enters in a Deep Factory Where He is Hunted by Demon.",
+            creator: "Unbwill",
+            id: "281648",
+            worldsCount: 4,
+            tags: ["adventure"]
+        },
+        {
+            title: "Carbo New Adventure",
+            description: "First Demo",
+            creator: "abobus228",
+            id: "257261",
+            worldsCount: 1,
+            tags: ["traditional", "short", "adventure", "boss"]
+        },
+        {
+            title: "Fun Lands Full Game",
+            description: "Enter the World of Fun Lands, Discover the Secrets of This Place, Fight Over 70 Intense Boss Battles, Find Gizmo and Have Fun!",
+            creator: "Ambton",
+            id: "281128",
+            worldsCount: 8,
+            tags: ["traditional", "adventure", "long", "boss"]
+        }
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const indexedLevels = DEFAULT_LEVELS.map((lvl, idx) => ({ ...lvl, siteIndex: idx }));
-            localStorage.setItem('ulbLevelExplorer_Levels', JSON.stringify(indexedLevels));
+        return array;
+    }
 
-            const indexedWorlds = DEFAULT_WORLDS.map((w, idx) => ({ ...w, siteIndex: idx }));
-            localStorage.setItem('ulbLevelExplorer_Worlds', JSON.stringify(indexedWorlds));
-            
-            const savedHideBadges = localStorage.getItem('ulbLevelExplorer_HideBadges') === 'true';
-            if (savedHideBadges) {
-                document.body.classList.add('hide-badges-active');
-                const toggle = document.getElementById('hideBadgesToggle');
-                if (toggle) toggle.checked = true;
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const indexedLevels =
+            DEFAULT_LEVELS.map((lvl, idx) => ({
+                ...lvl,
+                siteIndex: idx
+            }));
+
+        localStorage.setItem(
+            'ulbLevelExplorer_Levels',
+            JSON.stringify(indexedLevels)
+        );
+
+        const indexedWorlds =
+            DEFAULT_WORLDS.map((w, idx) => ({
+                ...w,
+                siteIndex: idx
+            }));
+
+        localStorage.setItem(
+            'ulbLevelExplorer_Worlds',
+            JSON.stringify(indexedWorlds)
+        );
+
+        const savedHideBadges =
+            localStorage.getItem('ulbLevelExplorer_HideBadges') === 'true';
+
+        if (savedHideBadges) {
+
+            document.body.classList.add('hide-badges-active');
+
+            const toggle =
+                document.getElementById('hideBadgesToggle');
+
+            if (toggle) toggle.checked = true;
+        }
+
+        const savedDarkMode =
+            localStorage.getItem('ulbLevelExplorer_DarkMode') === 'true';
+
+        if (savedDarkMode) {
+
+            document.body.classList.add('dark-mode-active');
+
+            const darkToggle =
+                document.getElementById('darkModeToggle');
+
+            if (darkToggle) darkToggle.checked = true;
+        }
+
+        toggleSearchInputs();
+        searchLevels();
+
+        /*
+         * SAFE BADGE CLICK HANDLER
+         *
+         * Badge information is stored in data attributes
+         * instead of inline JavaScript. This prevents badge
+         * names/descriptions containing quotes or apostrophes
+         * from breaking the generated HTML.
+         */
+        document.addEventListener('click', (event) => {
+
+            const badge =
+                event.target.closest('.og-badge-icon');
+
+            if (!badge) {
+                return;
             }
 
-            const savedDarkMode = localStorage.getItem('ulbLevelExplorer_DarkMode') === 'true';
-            if (savedDarkMode) {
-                document.body.classList.add('dark-mode-active');
-                const darkToggle = document.getElementById('darkModeToggle');
-                if (darkToggle) darkToggle.checked = true;
+            event.preventDefault();
+            event.stopPropagation();
+
+            try {
+
+                const badgeUrl =
+                    decodeURIComponent(
+                        badge.dataset.badgeUrl || ""
+                    );
+
+                const badgeName =
+                    decodeURIComponent(
+                        badge.dataset.badgeName || "Badge"
+                    );
+
+                const badgeDescription =
+                    decodeURIComponent(
+                        badge.dataset.badgeDescription || ""
+                    );
+
+                openBadgeInfo(
+                    event,
+                    badgeUrl,
+                    badgeName,
+                    badgeDescription
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to open badge information:",
+                    error
+                );
             }
-
-            toggleSearchInputs();
-            searchLevels();
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.custom-dropdown')) {
-                    document.querySelectorAll('.dropdown-options').forEach(el => el.classList.remove('show'));
-                }
-            });
         });
 
-        function openSearchModal() {
-            document.getElementById('searchModal').style.display = 'flex';
-        }
+        document.addEventListener('click', (e) => {
 
-        function syncAndSearch(inputElement) {
-            const className = inputElement.className;
-            document.querySelectorAll(`.${className}`).forEach(el => {
-                if (el !== inputElement) el.value = inputElement.value;
-            });
-            searchLevels();
-        }
+            if (!e.target.closest('.custom-dropdown')) {
 
-        function switchMainTab(tab) {
-            currentMainTab = tab;
-            const logoImg = document.getElementById('siteLogoImg');
-
-            if (tab === 'worlds') {
-                document.body.classList.add('worlds-active');
-                document.getElementById('tabWorldsBtn').classList.add('active');
-                document.getElementById('tabLevelsBtn').classList.remove('active');
-                document.querySelectorAll('.optSearchIdClass').forEach(el => el.innerText = 'World ID');
-                document.querySelectorAll('.optSearchTitleClass').forEach(el => el.innerText = 'World Title');
-                document.querySelectorAll('.labelTitleInputClass').forEach(el => el.innerText = 'World:');
-                if (logoImg) {
-                    logoImg.src = LOGO_WORLDS_URL;
-                    logoImg.style.height = (window.innerWidth <= 850) ? '38px' : '44px';
-                }
-            } else {
-                document.body.classList.remove('worlds-active');
-                document.getElementById('tabLevelsBtn').classList.add('active');
-                document.getElementById('tabWorldsBtn').classList.remove('active');
-                document.querySelectorAll('.optSearchIdClass').forEach(el => el.innerText = 'Level ID');
-                document.querySelectorAll('.optSearchTitleClass').forEach(el => el.innerText = 'Level Title');
-                document.querySelectorAll('.labelTitleInputClass').forEach(el => el.innerText = 'Level:');
-                if (logoImg) {
-                    logoImg.src = LOGO_LEVELS_URL;
-                    logoImg.style.height = (window.innerWidth <= 850) ? '28px' : '32px';
-                }
+                document
+                    .querySelectorAll('.dropdown-options')
+                    .forEach(el => el.classList.remove('show'));
             }
-            
-            toggleSearchInputs();
-            searchLevels();
-        }
+        });
+    });
 
-        function toggleDropdown(event, targetOptionsId) {
+    function openSearchModal() {
+        const modal =
+            document.getElementById('searchModal');
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function openUploadModal() {
+        const modal =
+            document.getElementById('uploadModal');
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function closeModal(event, modalId) {
+
+        if (
+            event &&
+            event.target &&
+            event.target.id === modalId
+        ) {
+            hideModal(modalId);
+        }
+    }
+
+    function hideModal(modalId) {
+
+        const modal =
+            document.getElementById(modalId);
+
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    function switchMoreTab(tabName) {
+
+        document
+            .querySelectorAll('.more-tab-btn')
+            .forEach(btn => btn.classList.remove('active'));
+
+        document
+            .querySelectorAll('.more-tab-content')
+            .forEach(content => content.classList.remove('active'));
+
+        const btn =
+            document.getElementById(`tabBtn-${tabName}`);
+
+        const content =
+            document.getElementById(`tabContent-${tabName}`);
+
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.add('active');
+    }
+
+    function openMoreModal(defaultTab = 'rules') {
+
+        switchMoreTab(defaultTab);
+
+        const modal =
+            document.getElementById('moreModal');
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    /*
+     * SAFE BADGE MODAL
+     *
+     * Defensive checks ensure a missing element does not
+     * crash the entire website.
+     */
+    function openBadgeInfo(
+        event,
+        badgeUrl,
+        badgeName = "Badge",
+        badgeDescription = ""
+    ) {
+
+        if (event) {
+            event.preventDefault();
             event.stopPropagation();
-            const target = document.getElementById(targetOptionsId);
-            const isOpen = target.classList.contains('show');
-            
-            document.querySelectorAll('.dropdown-options').forEach(el => el.classList.remove('show'));
-            if (!isOpen) {
-                target.classList.add('show');
+        }
+
+        const modal =
+            document.getElementById('badgeModal');
+
+        const image =
+            document.getElementById('badgeModalImg');
+
+        const title =
+            document.getElementById('badgeModalTitle');
+
+        const description =
+            document.getElementById('badgeModalDescription');
+
+        if (
+            !modal ||
+            !image ||
+            !title ||
+            !description
+        ) {
+            console.error(
+                "Badge modal elements are missing."
+            );
+            return;
+        }
+
+        image.src =
+            badgeUrl || "";
+
+        image.alt =
+            badgeName || "Badge";
+
+        title.innerText =
+            String(
+                badgeName || "Badge"
+            ).toUpperCase();
+
+        description.innerText =
+            String(
+                badgeDescription || ""
+            );
+
+        modal.style.display = 'flex';
+    }
+
+    function toggleHideBadges(checked) {
+
+        if (checked) {
+            document.body.classList.add('hide-badges-active');
+        } else {
+            document.body.classList.remove('hide-badges-active');
+        }
+
+        localStorage.setItem(
+            'ulbLevelExplorer_HideBadges',
+            checked
+        );
+    }
+
+    function toggleDarkMode(checked) {
+
+        if (checked) {
+            document.body.classList.add('dark-mode-active');
+        } else {
+            document.body.classList.remove('dark-mode-active');
+        }
+
+        localStorage.setItem(
+            'ulbLevelExplorer_DarkMode',
+            checked
+        );
+    }
+
+    function toggleSearchInputs() {
+
+        const singleBoxes =
+            document.querySelectorAll('.singleSearchBoxClass');
+
+        const dualBoxes =
+            document.querySelectorAll('.dualSearchBoxClass');
+
+        if (currentSearchMode === 'title_creator') {
+
+            singleBoxes.forEach(
+                el => el.style.display = 'none'
+            );
+
+            dualBoxes.forEach(
+                el => el.style.display = 'flex'
+            );
+
+        } else {
+
+            singleBoxes.forEach(
+                el => el.style.display = 'flex'
+            );
+
+            dualBoxes.forEach(
+                el => el.style.display = 'none'
+            );
+        }
+    }
+
+    function searchLevels() {
+
+        const data =
+            (currentMainTab === 'worlds')
+                ? getWorlds()
+                : getLevels();
+
+        let query = "";
+        let queryTitle = "";
+        let queryCreator = "";
+
+        const activeInput =
+            document.querySelector('.searchInputClass');
+
+        if (activeInput) {
+            query =
+                activeInput.value.trim().toLowerCase();
+        }
+
+        const activeTitleInput =
+            document.querySelector('.searchTitleInputClass');
+
+        if (activeTitleInput) {
+            queryTitle =
+                activeTitleInput.value.trim().toLowerCase();
+        }
+
+        const activeCreatorInput =
+            document.querySelector('.searchCreatorInputClass');
+
+        if (activeCreatorInput) {
+            queryCreator =
+                activeCreatorInput.value.trim().toLowerCase();
+        }
+
+        currentFilteredLevels =
+            data.filter(item => {
+
+                if (currentSearchMode === 'id') {
+
+                    return query === "" ||
+                        (item.id &&
+                         item.id.toLowerCase().includes(query));
+
+                } else if (currentSearchMode === 'title') {
+
+                    return query === "" ||
+                        (item.title &&
+                         item.title.toLowerCase().includes(query));
+
+                } else if (currentSearchMode === 'creator') {
+
+                    return query === "" ||
+                        (item.creator &&
+                         item.creator.toLowerCase().includes(query));
+
+                } else if (currentSearchMode === 'title_creator') {
+
+                    const matchTitle =
+                        queryTitle === "" ||
+                        (item.title &&
+                         item.title.toLowerCase().includes(queryTitle));
+
+                    const matchCreator =
+                        queryCreator === "" ||
+                        (item.creator &&
+                         item.creator.toLowerCase().includes(queryCreator));
+
+                    return matchTitle && matchCreator;
+
+                } else {
+
+                    if (query === "") return true;
+
+                    const idMatch =
+                        item.id &&
+                        item.id.toLowerCase().includes(query);
+
+                    const titleMatch =
+                        item.title &&
+                        item.title.toLowerCase().includes(query);
+
+                    const creatorMatch =
+                        item.creator &&
+                        item.creator.toLowerCase().includes(query);
+
+                    return idMatch ||
+                           titleMatch ||
+                           creatorMatch;
+                }
+            });
+
+        if (currentChartMode === 'oldest_site') {
+
+            currentFilteredLevels.sort(
+                (a, b) =>
+                    (a.siteIndex || 0) -
+                    (b.siteIndex || 0)
+            );
+
+        } else if (currentChartMode === 'newest_site') {
+
+            currentFilteredLevels.sort(
+                (a, b) =>
+                    (b.siteIndex || 0) -
+                    (a.siteIndex || 0)
+            );
+
+        } else if (currentChartMode === 'oldest_id') {
+
+            currentFilteredLevels.sort(
+                (a, b) =>
+                    parseInt(a.id || 0) -
+                    parseInt(b.id || 0)
+            );
+
+        } else if (currentChartMode === 'newest_id') {
+
+            currentFilteredLevels.sort(
+                (a, b) =>
+                    parseInt(b.id || 0) -
+                    parseInt(a.id || 0)
+            );
+
+        } else if (currentChartMode.startsWith('tag_')) {
+
+            const targetTag =
+                currentChartMode
+                    .replace('tag_', '')
+                    .toLowerCase();
+
+            currentFilteredLevels =
+                currentFilteredLevels.filter(item =>
+                    item.tags &&
+                    item.tags
+                        .map(t => t.toLowerCase())
+                        .includes(targetTag)
+                );
+
+        } else if (currentChartMode === 'none') {
+
+            shuffleArray(currentFilteredLevels);
+        }
+
+        currentPage = 1;
+        renderPage();
+    }
+
+    function syncAndSearch(inputElement) {
+
+        const className =
+            inputElement.className;
+
+        document
+            .querySelectorAll(`.${className}`)
+            .forEach(el => {
+
+                if (el !== inputElement) {
+                    el.value = inputElement.value;
+                }
+            });
+
+        searchLevels();
+    }
+
+    function switchMainTab(tab) {
+
+        currentMainTab = tab;
+
+        const logoImg =
+            document.getElementById('siteLogoImg');
+
+        if (tab === 'worlds') {
+
+            document.body.classList.add('worlds-active');
+
+            document
+                .getElementById('tabWorldsBtn')
+                .classList.add('active');
+
+            document
+                .getElementById('tabLevelsBtn')
+                .classList.remove('active');
+
+            document
+                .querySelectorAll('.optSearchIdClass')
+                .forEach(el => el.innerText = 'World ID');
+
+            document
+                .querySelectorAll('.optSearchTitleClass')
+                .forEach(el => el.innerText = 'World Title');
+
+            document
+                .querySelectorAll('.labelTitleInputClass')
+                .forEach(el => el.innerText = 'World:');
+
+            if (logoImg) {
+
+                logoImg.src =
+                    LOGO_WORLDS_URL;
+
+                logoImg.style.height =
+                    (window.innerWidth <= 850)
+                        ? '38px'
+                        : '44px';
+            }
+
+        } else {
+
+            document.body.classList.remove('worlds-active');
+
+            document
+                .getElementById('tabLevelsBtn')
+                .classList.add('active');
+
+            document
+                .getElementById('tabWorldsBtn')
+                .classList.remove('active');
+
+            document
+                .querySelectorAll('.optSearchIdClass')
+                .forEach(el => el.innerText = 'Level ID');
+
+            document
+                .querySelectorAll('.optSearchTitleClass')
+                .forEach(el => el.innerText = 'Level Title');
+
+            document
+                .querySelectorAll('.labelTitleInputClass')
+                .forEach(el => el.innerText = 'Level:');
+
+            if (logoImg) {
+
+                logoImg.src =
+                    LOGO_LEVELS_URL;
+
+                logoImg.style.height =
+                    (window.innerWidth <= 850)
+                        ? '28px'
+                        : '32px';
             }
         }
 
-        function selectSearchMode(mode, label) {
-            currentSearchMode = mode;
-            document.querySelectorAll('.searchDropdownSelectedClass').forEach(el => el.innerText = label);
-            document.querySelectorAll('.dropdown-options').forEach(el => el.classList.remove('show'));
-            toggleSearchInputs();
-            searchLevels();
+        toggleSearchInputs();
+        searchLevels();
+    }
+
+    function toggleDropdown(event, targetOptionsId) {
+
+        event.stopPropagation();
+
+        const target =
+            document.getElementById(targetOptionsId);
+
+        if (!target) {
+            return;
         }
 
-        function selectChart(chartMode, label) {
-            currentChartMode = chartMode;
-            document.querySelectorAll('.chart-selected-label').forEach(el => {
+        const isOpen =
+            target.classList.contains('show');
+
+        document
+            .querySelectorAll('.dropdown-options')
+            .forEach(el =>
+                el.classList.remove('show')
+            );
+
+        if (!isOpen) {
+            target.classList.add('show');
+        }
+    }
+
+    function selectSearchMode(mode, label) {
+
+        currentSearchMode = mode;
+
+        document
+            .querySelectorAll('.searchDropdownSelectedClass')
+            .forEach(el => el.innerText = label);
+
+        document
+            .querySelectorAll('.dropdown-options')
+            .forEach(el => el.classList.remove('show'));
+
+        toggleSearchInputs();
+        searchLevels();
+    }
+
+    function selectChart(chartMode, label) {
+
+        currentChartMode = chartMode;
+
+        document
+            .querySelectorAll('.chart-selected-label')
+            .forEach(el => {
                 el.innerText = label;
             });
-            document.querySelectorAll('.dropdown-options').forEach(el => el.classList.remove('show'));
-            searchLevels();
+
+        document
+            .querySelectorAll('.dropdown-options')
+            .forEach(el => el.classList.remove('show'));
+
+        searchLevels();
+    }
+
+    function getLevels() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    'ulbLevelExplorer_Levels'
+                )
+            ) || [];
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load levels:",
+                error
+            );
+
+            return [];
+        }
+    }
+
+    function getWorlds() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    'ulbLevelExplorer_Worlds'
+                )
+            ) || [];
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load worlds:",
+                error
+            );
+
+            return [];
+        }
+    }
+
+    function resolveCreatorProfileName(creatorName) {
+
+        if (!creatorName) {
+            return "";
         }
 
-        function getLevels() {
-            return JSON.parse(localStorage.getItem('ulbLevelExplorer_Levels')) || [];
+        const normalized =
+            String(creatorName)
+                .trim()
+                .toLowerCase();
+
+        return CREATOR_ALIASES[normalized] ||
+               creatorName;
+    }
+
+    function getCreatorPfpUrl(creatorName) {
+
+        if (!creatorName) {
+            return DEFAULT_PROFILE_PFP;
         }
 
-        function getWorlds() {
-            return JSON.parse(localStorage.getItem('ulbLevelExplorer_Worlds')) || [];
+        const normalized =
+            String(creatorName)
+                .trim()
+                .toLowerCase();
+
+        return PROFILE_PICTURES[normalized] ||
+               DEFAULT_PROFILE_PFP;
+    }
+
+    /*
+     * ALIAS-AWARE BADGE SYSTEM
+     *
+     * Existing badge entries are NOT deleted.
+     *
+     * Marquise94:
+     *   -> existing Marquise94 badges
+     *   -> inherited Marthecoolguy badges
+     *
+     * Duplicate badges are displayed only once.
+     */
+    function getCreatorBadges(creatorName) {
+
+        if (!creatorName) {
+            return [];
         }
 
-        function resolveCreatorProfileName(creatorName) {
-            const normalized = creatorName.trim().toLowerCase();
-            return CREATOR_ALIASES[normalized] || creatorName;
+        const normalized =
+            String(creatorName)
+                .trim()
+                .toLowerCase();
+
+        const aliasTarget =
+            CREATOR_ALIASES[normalized];
+
+        const canonicalName =
+            (
+                aliasTarget ||
+                creatorName
+            )
+            .trim()
+            .toLowerCase();
+
+        const badges = [];
+
+        /*
+         * Keep badges assigned directly to this creator.
+         */
+        if (SPECIAL_CREATOR_BADGES[normalized]) {
+
+            badges.push(
+                ...SPECIAL_CREATOR_BADGES[normalized]
+            );
         }
 
-        function getCreatorBadgeUrl(creatorName) {
-            const normalized = creatorName.trim().toLowerCase();
-            if (SPECIAL_CREATOR_BADGES[normalized]) {
-                return SPECIAL_CREATOR_BADGES[normalized];
-            }
-            if (OG_CREATORS.includes(normalized)) {
-                return DEFAULT_OG_BADGE_URL;
-            }
-            return null;
+        /*
+         * Inherit badges from the canonical account
+         * when this creator is an alias.
+         */
+        if (
+            canonicalName !== normalized &&
+            SPECIAL_CREATOR_BADGES[canonicalName]
+        ) {
+
+            badges.push(
+                ...SPECIAL_CREATOR_BADGES[canonicalName]
+            );
         }
 
-        function getBadgeHtml(badgeUrl) {
-            return `<img src="${badgeUrl}" alt="OG Badge" class="og-badge-icon" title="OG Badge" onclick="openBadgeInfo(event, '${badgeUrl}')" />`;
-        }
+        /*
+         * Normal OG badge.
+         *
+         * NEW DESCRIPTION:
+         * This badge is awarded to those who submitted
+         * the first 4 Levels and the 1st ever Collab Level!
+         */
+        if (
+            OG_CREATORS.includes(normalized) ||
+            OG_CREATORS.includes(canonicalName)
+        ) {
 
-        function renderCreatorLinks(creatorStr) {
-            if (!creatorStr) return 'Unknown';
-            
-            const parts = creatorStr.split(/(&|,)/);
-            return parts.map(part => {
-                const trimmed = part.trim();
-                if (trimmed === '&' || trimmed === ',') {
-                    return ` ${trimmed} `;
-                }
-                
-                const targetProfile = resolveCreatorProfileName(trimmed);
-                const badgeUrl = getCreatorBadgeUrl(trimmed);
-                const badge = badgeUrl ? ` ${getBadgeHtml(badgeUrl)}` : '';
-                return `<span class="creator-link" onclick="openCreatorProfile('${targetProfile.replace(/'/g, "\\'")}')">${trimmed}</span>${badge}`;
-            }).join('');
-        }
-
-        function renderGridCreator(creatorStr) {
-            if (!creatorStr) return 'BY: Unknown';
-            const parts = creatorStr.split(/(&|,)/);
-            
-            const rendered = parts.map(part => {
-                const trimmed = part.trim();
-                if (trimmed === '&' || trimmed === ',') return ` ${trimmed} `;
-                const badgeUrl = getCreatorBadgeUrl(trimmed);
-                const badge = badgeUrl ? ` ${getBadgeHtml(badgeUrl)}` : '';
-                return `${trimmed}${badge}`;
-            }).join('');
-
-            return `BY: ${rendered}`;
-        }
-
-        function copyLevelId(id) {
-            if (!id || id === 'N/A') return;
-            navigator.clipboard.writeText(id).then(() => {
-                document.getElementById('copiedModal').style.display = 'flex';
-            }).catch(() => {
-                const tempInput = document.createElement('input');
-                tempInput.value = id;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                document.getElementById('copiedModal').style.display = 'flex';
+            badges.push({
+                url: DEFAULT_OG_BADGE_URL,
+                name: "OG",
+                description:
+                    "This badge is awarded to those who submitted the first 4 Levels and the 1st ever Collab Level!"
             });
         }
 
-        function renderPage() {
-            const grid = document.getElementById('levelGrid');
-            grid.innerHTML = ''; 
+        /*
+         * Deduplicate badges without removing any
+         * badge definitions from the data above.
+         */
+        const seen = new Set();
 
-            const totalPages = Math.max(1, Math.ceil(currentFilteredLevels.length / PAGE_SIZE));
-            if (currentPage > totalPages) currentPage = totalPages;
+        return badges.filter(badge => {
 
-            const startIndex = (currentPage - 1) * PAGE_SIZE;
-            const pageItems = currentFilteredLevels.slice(startIndex, startIndex + PAGE_SIZE);
-
-            for (let i = 0; i < PAGE_SIZE; i++) {
-                const card = document.createElement('div');
-                card.className = 'level-card';
-
-                const item = pageItems[i];
-                if (item) {
-                    card.classList.add('active-card');
-                    card.innerHTML = `
-                        <div class="level-title">${item.title || 'Untitled'}</div>
-                        <div class="level-sub-creator">${renderGridCreator(item.creator)}</div>
-                    `;
-                    card.onclick = () => openLevelModal(item);
-                } else {
-                    card.classList.add('empty-card');
-                }
-                grid.appendChild(card);
+            if (!badge) {
+                return false;
             }
 
-            document.getElementById('pageNumber').innerText = currentPage;
-            
-            const prevBtn = document.getElementById('prevPageBtn');
-            const nextBtn = document.getElementById('nextPageBtn');
+            const badgeKey =
+                `${badge.name || "Badge"}|${badge.url || ""}`;
+
+            if (seen.has(badgeKey)) {
+                return false;
+            }
+
+            seen.add(badgeKey);
+
+            return true;
+        });
+    }
+
+    /*
+     * SAFE BADGE HTML
+     *
+     * No inline onclick is used here.
+     *
+     * Badge data is URL-encoded into data attributes,
+     * which prevents quotes/apostrophes from breaking
+     * the generated HTML.
+     */
+    function getBadgeHtml(badge) {
+
+        if (!badge || !badge.url) {
+            return '';
+        }
+
+        const badgeUrl =
+            encodeURIComponent(
+                String(badge.url)
+            );
+
+        const badgeName =
+            encodeURIComponent(
+                String(badge.name || "Badge")
+            );
+
+        const badgeDescription =
+            encodeURIComponent(
+                String(badge.description || "")
+            );
+
+        const safeAlt =
+            escapeHtml(
+                String(badge.name || "Badge")
+            );
+
+        return `
+            <img
+                src="${escapeHtml(String(badge.url))}"
+                alt="${safeAlt}"
+                class="og-badge-icon"
+                title="${safeAlt}"
+                data-badge-url="${badgeUrl}"
+                data-badge-name="${badgeName}"
+                data-badge-description="${badgeDescription}"
+            />
+        `;
+    }
+
+    function getPfpHtml(pfpUrl) {
+
+        return `
+            <img
+                src="${escapeHtml(String(pfpUrl || DEFAULT_PROFILE_PFP))}"
+                alt="PFP"
+                class="pfp-avatar"
+            />
+        `;
+    }
+
+    function renderCreatorLinks(creatorStr) {
+
+        if (!creatorStr) return 'Unknown';
+
+        const parts =
+            creatorStr.split(/(&|,)/);
+
+        return parts.map(part => {
+
+            const trimmed =
+                part.trim();
+
+            if (
+                trimmed === '&' ||
+                trimmed === ','
+            ) {
+
+                return ` ${trimmed} `;
+            }
+
+            const targetProfile =
+                resolveCreatorProfileName(trimmed);
+
+            const pfpUrl =
+                getCreatorPfpUrl(trimmed);
+
+            const pfpHtml =
+                getPfpHtml(pfpUrl);
+
+            const badges =
+                getCreatorBadges(trimmed);
+
+            const badge =
+                badges.length > 0
+                    ? ' ' + badges.map(getBadgeHtml).join(' ')
+                    : '';
+
+            /*
+             * Use JSON.stringify for the profile name so
+             * creator names containing quotes cannot break
+             * the profile onclick handler.
+             */
+            const safeProfileName =
+                JSON.stringify(
+                    String(targetProfile)
+                );
+
+            return `
+                <span
+                    class="creator-link"
+                    onclick="openCreatorProfile(${safeProfileName})"
+                >
+                    ${pfpHtml}
+                    ${escapeHtml(trimmed)}
+                </span>
+                ${badge}
+            `;
+
+        }).join('');
+    }
+
+    function renderGridCreator(creatorStr) {
+
+        if (!creatorStr) return 'BY: Unknown';
+
+        const parts =
+            creatorStr.split(/(&|,)/);
+
+        const rendered =
+            parts.map(part => {
+
+                const trimmed =
+                    part.trim();
+
+                if (
+                    trimmed === '&' ||
+                    trimmed === ','
+                ) {
+
+                    return ` ${trimmed} `;
+                }
+
+                const pfpUrl =
+                    getCreatorPfpUrl(trimmed);
+
+                const pfpHtml =
+                    getPfpHtml(pfpUrl);
+
+                const badges =
+                    getCreatorBadges(trimmed);
+
+                const badge =
+                    badges.length > 0
+                        ? ' ' + badges.map(getBadgeHtml).join(' ')
+                        : '';
+
+                return `
+                    ${pfpHtml}
+                    ${escapeHtml(trimmed)}
+                    ${badge}
+                `;
+
+            }).join('');
+
+        return `BY: ${rendered}`;
+    }
+
+    function copyLevelId(id) {
+
+        if (!id || id === 'N/A') return;
+
+        if (
+            navigator.clipboard &&
+            navigator.clipboard.writeText
+        ) {
+
+            navigator.clipboard.writeText(id)
+                .then(() => {
+
+                    const modal =
+                        document.getElementById('copiedModal');
+
+                    if (modal) {
+                        modal.style.display = 'flex';
+                    }
+
+                })
+                .catch(() => {
+
+                    fallbackCopyLevelId(id);
+                });
+
+        } else {
+
+            fallbackCopyLevelId(id);
+        }
+    }
+
+    function fallbackCopyLevelId(id) {
+
+        const tempInput =
+            document.createElement('input');
+
+        tempInput.value = id;
+
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (error) {
+            console.error(
+                "Fallback copy failed:",
+                error
+            );
+        }
+
+        document.body.removeChild(tempInput);
+
+        const modal =
+            document.getElementById('copiedModal');
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function renderPage() {
+
+        const grid =
+            document.getElementById('levelGrid');
+
+        if (!grid) {
+            return;
+        }
+
+        grid.innerHTML = '';
+
+        const totalPages =
+            Math.max(
+                1,
+                Math.ceil(
+                    currentFilteredLevels.length /
+                    PAGE_SIZE
+                )
+            );
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        const startIndex =
+            (currentPage - 1) * PAGE_SIZE;
+
+        const pageItems =
+            currentFilteredLevels.slice(
+                startIndex,
+                startIndex + PAGE_SIZE
+            );
+
+        for (let i = 0; i < PAGE_SIZE; i++) {
+
+            const card =
+                document.createElement('div');
+
+            card.className = 'level-card';
+
+            const item =
+                pageItems[i];
+
+            if (item) {
+
+                card.classList.add('active-card');
+
+                card.innerHTML = `
+                    <div class="level-title">
+                        ${escapeHtml(item.title || 'Untitled')}
+                    </div>
+
+                    <div class="level-sub-creator">
+                        ${renderGridCreator(item.creator)}
+                    </div>
+                `;
+
+                /*
+                 * Prevent clicks on badges and creator links
+                 * from also opening the level/world modal.
+                 */
+                card.onclick = (event) => {
+
+                    if (
+                        event.target.closest('.og-badge-icon') ||
+                        event.target.closest('.creator-link')
+                    ) {
+                        return;
+                    }
+
+                    openLevelModal(item);
+                };
+
+            } else {
+
+                card.classList.add('empty-card');
+            }
+
+            grid.appendChild(card);
+        }
+
+        const pageNumber =
+            document.getElementById('pageNumber');
+
+        if (pageNumber) {
+            pageNumber.innerText =
+                currentPage;
+        }
+
+        const prevBtn =
+            document.getElementById('prevPageBtn');
+
+        const nextBtn =
+            document.getElementById('nextPageBtn');
+
+        if (prevBtn) {
 
             if (currentPage <= 1) {
                 prevBtn.classList.add('disabled');
             } else {
                 prevBtn.classList.remove('disabled');
             }
+        }
+
+        if (nextBtn) {
 
             if (currentPage >= totalPages) {
                 nextBtn.classList.add('disabled');
@@ -1845,321 +3653,480 @@ Changed the name to "ULB: Level Browser"!</div>
                 nextBtn.classList.remove('disabled');
             }
         }
+    }
 
-        function changePage(direction) {
-            const totalPages = Math.max(1, Math.ceil(currentFilteredLevels.length / PAGE_SIZE));
-            const newPage = currentPage + direction;
+    function changePage(direction) {
 
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderPage();
+        const totalPages =
+            Math.max(
+                1,
+                Math.ceil(
+                    currentFilteredLevels.length /
+                    PAGE_SIZE
+                )
+            );
+
+        const newPage =
+            currentPage + direction;
+
+        if (
+            newPage >= 1 &&
+            newPage <= totalPages
+        ) {
+
+            currentPage = newPage;
+            renderPage();
+        }
+    }
+
+    function escapeHtml(text) {
+
+        const div =
+            document.createElement('div');
+
+        div.innerText =
+            String(text ?? '');
+
+        return div.innerHTML;
+    }
+
+    function checkAndTruncateDescription(text) {
+
+        if (!text) {
+
+            return {
+                truncated: false,
+                text: 'No description provided.'
+            };
+        }
+
+        const isMobile =
+            window.innerWidth <= 850;
+
+        const wordLimit =
+            isMobile ? 30 : 140;
+
+        const maxWordLength =
+            isMobile ? 18 : 35;
+
+        const words =
+            String(text)
+                .trim()
+                .split(/\s+/);
+
+        const hasLongWord =
+            words.some(
+                w => w.length > maxWordLength
+            );
+
+        const isTooLong =
+            words.length > wordLimit ||
+            hasLongWord;
+
+        if (!isTooLong) {
+
+            return {
+                truncated: false,
+                text: text
+            };
+        }
+
+        let truncatedWords =
+            words.slice(0, wordLimit);
+
+        let truncatedText =
+            truncatedWords
+                .map(w =>
+                    w.length > maxWordLength
+                        ? w.substring(0, maxWordLength) + '...'
+                        : w
+                )
+                .join(' ');
+
+        return {
+            truncated: true,
+            text: truncatedText + '...'
+        };
+    }
+
+    function openFullDescModal(fullText) {
+
+        const textElement =
+            document.getElementById('fullDescModalText');
+
+        const modal =
+            document.getElementById('fullDescModal');
+
+        if (!textElement || !modal) {
+            return;
+        }
+
+        textElement.innerText =
+            String(fullText || '');
+
+        modal.style.display =
+            'flex';
+    }
+
+    function openLevelModal(item) {
+
+        if (!item) {
+            return;
+        }
+
+        hideModal('profileModal');
+
+        const isWorld =
+            currentMainTab === 'worlds' ||
+            item.worldsCount !== undefined;
+
+        const titleEl =
+            document.getElementById('modalTitle');
+
+        if (titleEl) {
+            titleEl.innerText =
+                item.title || 'Untitled';
+        }
+
+        const creatorEl =
+            document.getElementById('modalCreator');
+
+        if (creatorEl) {
+            creatorEl.innerHTML =
+                renderCreatorLinks(item.creator);
+        }
+
+        const modalIdEl =
+            document.getElementById('modalId');
+
+        if (modalIdEl) {
+
+            modalIdEl.innerText =
+                item.id || 'N/A';
+
+            modalIdEl.onclick =
+                () => copyLevelId(item.id);
+        }
+
+        const labelEl =
+            document.getElementById('modalIdLabel');
+
+        if (labelEl) {
+
+            labelEl.innerText =
+                isWorld
+                    ? 'WORLD ID:'
+                    : 'LEVEL ID:';
+        }
+
+        const worldsMeta =
+            document.getElementById('modalWorldsMeta');
+
+        if (
+            worldsMeta &&
+            isWorld &&
+            item.worldsCount !== undefined
+        ) {
+
+            const countEl =
+                document.getElementById('modalWorldsCount');
+
+            if (countEl) {
+                countEl.innerText =
+                    item.worldsCount;
             }
+
+            worldsMeta.style.display =
+                'block';
+
+        } else if (worldsMeta) {
+
+            worldsMeta.style.display =
+                'none';
         }
 
-        /* Helper to escape HTML text for safe rendering */
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.innerText = text;
-            return div.innerHTML;
-        }
+        const thumbWrapper =
+            document.getElementById('modalThumbWrapper');
 
-        /* Description length check & truncation detector */
-        function checkAndTruncateDescription(text) {
-            if (!text) return { truncated: false, text: 'No description provided.' };
+        const thumbImg =
+            document.getElementById('modalThumb');
 
-            const isMobile = window.innerWidth <= 850;
-            const wordLimit = isMobile ? 30 : 140;
-            const maxWordLength = isMobile ? 18 : 35; // Long word threshold for layout breaking
+        if (
+            thumbWrapper &&
+            thumbImg
+        ) {
 
-            const words = text.trim().split(/\s+/);
-            const hasLongWord = words.some(w => w.length > maxWordLength);
-            const isTooLong = words.length > wordLimit || hasLongWord;
+            if (item.thumbnail) {
 
-            if (!isTooLong) {
-                return { truncated: false, text: text };
-            }
+                thumbImg.src =
+                    item.thumbnail;
 
-            let truncatedWords = words.slice(0, wordLimit);
-            let truncatedText = truncatedWords.map(w => w.length > maxWordLength ? w.substring(0, maxWordLength) + '...' : w).join(' ');
-            return { truncated: true, text: truncatedText + '...' };
-        }
+                thumbWrapper.style.display =
+                    'flex';
 
-        function openFullDescModal(fullText) {
-            document.getElementById('fullDescModalText').innerText = fullText;
-            document.getElementById('fullDescModal').style.display = 'flex';
-        }
-
-        function openLevelModal(item) {
-            hideModal('profileModal');
-            const isWorld = currentMainTab === 'worlds' || item.worldsCount !== undefined;
-
-            document.getElementById('modalTitle').innerText = item.title || 'Untitled';
-            document.getElementById('modalCreator').innerHTML = renderCreatorLinks(item.creator);
-            
-            const idElem = document.getElementById('modalId');
-            idElem.innerText = item.id || 'N/A';
-            idElem.onclick = () => copyLevelId(item.id);
-
-            document.getElementById('modalIdLabel').innerText = isWorld ? "WORLD ID:" : "LEVEL ID:";
-
-            const worldsMeta = document.getElementById('modalWorldsMeta');
-            if (isWorld && item.worldsCount !== undefined) {
-                worldsMeta.style.display = 'block';
-                document.getElementById('modalWorldsCount').innerText = item.worldsCount;
             } else {
-                worldsMeta.style.display = 'none';
+
+                thumbWrapper.style.display =
+                    'none';
             }
+        }
 
-            const rawDesc = item.description || 'No description provided.';
-            const descElem = document.getElementById('modalDesc');
-            const result = checkAndTruncateDescription(rawDesc);
+        const descEl =
+            document.getElementById('modalDesc');
 
-            if (result.truncated) {
-                descElem.classList.add('has-more');
-                descElem.innerHTML = `${escapeHtml(result.text)} <span class="desc-more-btn">More...</span>`;
-                descElem.onclick = () => openFullDescModal(rawDesc);
+        if (descEl) {
+
+            const rawDesc =
+                item.description || '';
+
+            const descData =
+                checkAndTruncateDescription(rawDesc);
+
+            if (descData.truncated) {
+
+                descEl.innerHTML =
+                    `${escapeHtml(descData.text)}
+                     <span class="desc-more-btn">
+                        more
+                     </span>`;
+
+                descEl.classList.add('has-more');
+
+                descEl.onclick =
+                    () => openFullDescModal(rawDesc);
+
             } else {
-                descElem.classList.remove('has-more');
-                descElem.innerText = rawDesc;
-                descElem.onclick = null;
-            }
-            
-            const thumbWrapper = document.getElementById('modalThumbWrapper');
-            const thumbElem = document.getElementById('modalThumb');
-            
-            if (isWorld) {
-                thumbWrapper.style.display = 'none';
-            } else {
-                if (item.thumbnail) {
-                    thumbElem.src = item.thumbnail;
-                    thumbWrapper.style.display = 'flex';
-                } else {
-                    thumbWrapper.style.display = 'none';
-                }
-            }
 
-            const tagsContainer = document.getElementById('modalTags');
+                descEl.innerText =
+                    descData.text;
+
+                descEl.classList.remove('has-more');
+
+                descEl.onclick =
+                    null;
+            }
+        }
+
+        const tagsContainer =
+            document.getElementById('modalTags');
+
+        if (tagsContainer) {
+
             tagsContainer.innerHTML = '';
-            if (item.tags && Array.isArray(item.tags)) {
+
+            if (
+                item.tags &&
+                item.tags.length > 0
+            ) {
+
                 item.tags.forEach(tag => {
-                    const pill = document.createElement('span');
-                    pill.className = 'tag-pill';
-                    pill.innerText = `#${tag}`;
+
+                    const pill =
+                        document.createElement('span');
+
+                    pill.className =
+                        'tag-pill';
+
+                    pill.innerText =
+                        String(tag).toUpperCase();
+
                     tagsContainer.appendChild(pill);
                 });
             }
-
-            document.getElementById('levelModal').style.display = 'flex';
         }
 
-        function openCreatorProfile(creatorName) {
-            hideModal('levelModal');
-            const targetName = resolveCreatorProfileName(creatorName);
-            const allLevels = getLevels();
-            const allWorlds = getWorlds();
-            
-            const checkCreator = (str) => {
-                if (!str) return false;
-                const creators = str.toLowerCase().split(/&|,/).map(c => c.trim());
-                return creators.includes(targetName.toLowerCase()) || 
-                       creators.some(c => (CREATOR_ALIASES[c] || '').toLowerCase() === targetName.toLowerCase());
+        const modal =
+            document.getElementById('levelModal');
+
+        if (modal) {
+            modal.style.display =
+                'flex';
+        }
+    }
+
+    function openCreatorProfile(targetCreatorName) {
+
+        if (!targetCreatorName) {
+            return;
+        }
+
+        hideModal('levelModal');
+
+        const profileNameEl =
+            document.getElementById('profileName');
+
+        const profilePfpEl =
+            document.getElementById('profilePfp');
+
+        const listEl =
+            document.getElementById('profileLevelList');
+
+        if (
+            !profileNameEl ||
+            !profilePfpEl ||
+            !listEl
+        ) {
+            return;
+        }
+
+        const canonicalName =
+            resolveCreatorProfileName(
+                targetCreatorName
+            );
+
+        profileNameEl.innerText =
+            canonicalName.toUpperCase();
+
+        profilePfpEl.src =
+            getCreatorPfpUrl(targetCreatorName);
+
+        listEl.innerHTML = '';
+
+        const allLevels =
+            getLevels();
+
+        const allWorlds =
+            getWorlds();
+
+        const isCreatorMatch =
+            (creatorField, searchTarget) => {
+
+                if (!creatorField) {
+                    return false;
+                }
+
+                const parts =
+                    creatorField
+                        .split(/&|,/)
+                        .map(p =>
+                            resolveCreatorProfileName(
+                                p.trim()
+                            ).toLowerCase()
+                        );
+
+                return parts.includes(
+                    searchTarget.toLowerCase()
+                );
             };
 
-            const userLevels = allLevels.filter(lvl => checkCreator(lvl.creator));
-            const userWorlds = allWorlds.filter(w => checkCreator(w.creator));
+        const userLevels =
+            allLevels.filter(
+                lvl =>
+                    isCreatorMatch(
+                        lvl.creator,
+                        canonicalName
+                    )
+            );
 
-            const badgeUrl = getCreatorBadgeUrl(targetName);
-            const badgeHtml = badgeUrl ? ` ${getBadgeHtml(badgeUrl)}` : '';
-            document.getElementById('profileName').innerHTML = targetName.toUpperCase() + "'S PROFILE" + badgeHtml;
-            
-            const listContainer = document.getElementById('profileLevelList');
-            listContainer.innerHTML = '';
+        const userWorlds =
+            allWorlds.filter(
+                w =>
+                    isCreatorMatch(
+                        w.creator,
+                        canonicalName
+                    )
+            );
 
-            if (userLevels.length === 0 && userWorlds.length === 0) {
-                listContainer.innerHTML = `<div style="font-size: 0.6rem; color: #888; text-align: center; padding: 20px;">No levels or worlds uploaded yet.</div>`;
-            } else {
-                if (userLevels.length > 0) {
-                    const secTitle = document.createElement('div');
-                    secTitle.className = 'profile-section-title';
-                    secTitle.innerText = 'Created Levels';
-                    listContainer.appendChild(secTitle);
+        if (
+            userLevels.length === 0 &&
+            userWorlds.length === 0
+        ) {
 
-                    userLevels.forEach(lvl => {
-                        const item = document.createElement('div');
-                        item.className = 'profile-level-item';
-                        item.innerHTML = `
-                            <span class="profile-level-name">${lvl.title}</span>
-                            <span class="profile-level-id clickable-id" title="Click to copy ID">ID: ${lvl.id}</span>
-                        `;
-                        item.querySelector('.profile-level-id').onclick = (e) => {
-                            e.stopPropagation();
-                            copyLevelId(lvl.id);
-                        };
-                        item.onclick = () => {
-                            switchMainTab('levels');
-                            openLevelModal(lvl);
-                        };
-                        listContainer.appendChild(item);
-                    });
-                }
+            listEl.innerHTML =
+                '<div style="color:#aaa; font-size:0.7rem; text-align:center; padding:10px;">No creations found for this user.</div>';
 
-                if (userWorlds.length > 0) {
-                    const secTitle = document.createElement('div');
-                    secTitle.className = 'profile-section-title';
-                    secTitle.innerText = 'Created Worlds';
-                    listContainer.appendChild(secTitle);
+        } else {
 
-                    userWorlds.forEach(w => {
-                        const item = document.createElement('div');
-                        item.className = 'profile-level-item';
-                        item.innerHTML = `
-                            <span class="profile-level-name">${w.title}</span>
-                            <span class="profile-level-id clickable-id" title="Click to copy ID">ID: ${w.id}</span>
-                        `;
-                        item.querySelector('.profile-level-id').onclick = (e) => {
-                            e.stopPropagation();
-                            copyLevelId(w.id);
-                        };
-                        item.onclick = () => {
-                            switchMainTab('worlds');
-                            openLevelModal(w);
-                        };
-                        listContainer.appendChild(item);
-                    });
-                }
+            if (userLevels.length > 0) {
+
+                const levelHeader =
+                    document.createElement('div');
+
+                levelHeader.className =
+                    'profile-section-title';
+
+                levelHeader.innerText =
+                    'LEVELS';
+
+                listEl.appendChild(
+                    levelHeader
+                );
+
+                userLevels.forEach(lvl => {
+
+                    const item =
+                        document.createElement('div');
+
+                    item.className =
+                        'profile-level-item';
+
+                    item.innerHTML = `
+                        <span class="profile-level-name">
+                            ${escapeHtml(lvl.title || 'Untitled')}
+                        </span>
+
+                        <span class="profile-level-id">
+                            ID: ${escapeHtml(lvl.id || 'N/A')}
+                        </span>
+                    `;
+
+                    item.onclick =
+                        () => openLevelModal(lvl);
+
+                    listEl.appendChild(item);
+                });
             }
 
-            document.getElementById('profileModal').style.display = 'flex';
-        }
+            if (userWorlds.length > 0) {
 
-        function openBadgeInfo(event, badgeUrl) {
-            event.stopPropagation();
-            document.getElementById('badgeModalImg').src = badgeUrl || DEFAULT_OG_BADGE_URL;
-            document.getElementById('badgeModal').style.display = 'flex';
-        }
+                const worldHeader =
+                    document.createElement('div');
 
-        function openMoreModal(defaultTab = 'rules') {
-            switchMoreTab(defaultTab);
-            document.getElementById('moreModal').style.display = 'flex';
-        }
+                worldHeader.className =
+                    'profile-section-title';
 
-        function switchMoreTab(tabName) {
-            document.querySelectorAll('.more-tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.more-tab-content').forEach(content => content.classList.remove('active'));
+                worldHeader.innerText =
+                    'WORLDS';
 
-            const activeBtn = document.getElementById(`tabBtn-${tabName}`);
-            const activeContent = document.getElementById(`tabContent-${tabName}`);
+                listEl.appendChild(
+                    worldHeader
+                );
 
-            if (activeBtn) activeBtn.classList.add('active');
-            if (activeContent) activeContent.classList.add('active');
-        }
+                userWorlds.forEach(w => {
 
-        function toggleHideBadges(shouldHide) {
-            if (shouldHide) {
-                document.body.classList.add('hide-badges-active');
-                localStorage.setItem('ulbLevelExplorer_HideBadges', 'true');
-            } else {
-                document.body.classList.remove('hide-badges-active');
-                localStorage.setItem('ulbLevelExplorer_HideBadges', 'false');
-            }
-        }
+                    const item =
+                        document.createElement('div');
 
-        function toggleDarkMode(shouldEnable) {
-            if (shouldEnable) {
-                document.body.classList.add('dark-mode-active');
-                localStorage.setItem('ulbLevelExplorer_DarkMode', 'true');
-            } else {
-                document.body.classList.remove('dark-mode-active');
-                localStorage.setItem('ulbLevelExplorer_DarkMode', 'false');
-            }
-        }
+                    item.className =
+                        'profile-level-item';
 
-        function hideModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+                    item.innerHTML = `
+                        <span class="profile-level-name">
+                            ${escapeHtml(w.title || 'Untitled')}
+                        </span>
 
-        function closeModal(event, modalId) {
-            if (event.target.id === modalId) {
-                hideModal(modalId);
-            }
-        }
+                        <span class="profile-level-id">
+                            ID: ${escapeHtml(w.id || 'N/A')}
+                        </span>
+                    `;
 
-        function toggleSearchInputs() {
-            const singleBoxes = document.querySelectorAll('.singleSearchBoxClass');
-            const dualBoxes = document.querySelectorAll('.dualSearchBoxClass');
-            const inputs = document.querySelectorAll('.searchInputClass');
+                    item.onclick =
+                        () => openLevelModal(w);
 
-            const term = currentMainTab === 'worlds' ? 'World' : 'Level';
-
-            if (currentSearchMode === 'title_creator') {
-                singleBoxes.forEach(b => b.style.display = 'none');
-                dualBoxes.forEach(b => b.style.display = 'flex');
-            } else {
-                singleBoxes.forEach(b => b.style.display = 'flex');
-                dualBoxes.forEach(b => b.style.display = 'none');
-
-                inputs.forEach(input => {
-                    if (currentSearchMode === 'id') {
-                        input.placeholder = `Search by ${term} ID...`;
-                    } else if (currentSearchMode === 'title') {
-                        input.placeholder = `Search by ${term} Title...`;
-                    } else if (currentSearchMode === 'creator') {
-                        input.placeholder = `Search by Creator...`;
-                    } else {
-                        input.placeholder = `Search ${term.toLowerCase()}s...`;
-                    }
+                    listEl.appendChild(item);
                 });
             }
         }
 
-        function searchLevels() {
-            const isWorlds = currentMainTab === 'worlds';
-            const baseItems = isWorlds ? getWorlds() : getLevels();
-            
-            const singleVal = (document.querySelector('.searchInputClass')?.value || '').toLowerCase().trim();
-            const titleVal = (document.querySelector('.searchTitleInputClass')?.value || '').toLowerCase().trim();
-            const creatorVal = (document.querySelector('.searchCreatorInputClass')?.value || '').toLowerCase().trim();
+        const modal =
+            document.getElementById('profileModal');
 
-            let filtered = baseItems.filter(item => {
-                const title = (item.title || '').toLowerCase();
-                const creator = (item.creator || '').toLowerCase();
-                const id = (item.id || '').toLowerCase();
-                const tags = item.tags || [];
-
-                if (currentSearchMode === 'id') {
-                    return id.includes(singleVal);
-                } else if (currentSearchMode === 'title') {
-                    return title.includes(singleVal);
-                } else if (currentSearchMode === 'creator') {
-                    return creator.includes(singleVal);
-                } else if (currentSearchMode === 'title_creator') {
-                    const matchTitle = !titleVal || title.includes(titleVal);
-                    const matchCreator = !creatorVal || creator.includes(creatorVal);
-                    return matchTitle && matchCreator;
-                } else {
-                    return title.includes(singleVal) || creator.includes(singleVal) || id.includes(singleVal) || tags.some(t => t.toLowerCase().includes(singleVal));
-                }
-            });
-
-            if (currentChartMode === 'none') {
-                shuffleArray(filtered);
-            } else if (currentChartMode === 'oldest_site') {
-                filtered.sort((a, b) => (a.siteIndex ?? 0) - (b.siteIndex ?? 0));
-            } else if (currentChartMode === 'newest_site') {
-                filtered.sort((a, b) => (b.siteIndex ?? 0) - (a.siteIndex ?? 0));
-            } else if (currentChartMode === 'oldest_id') {
-                filtered.sort((a, b) => parseInt(a.id || 0) - parseInt(b.id || 0));
-            } else if (currentChartMode === 'newest_id') {
-                filtered.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
-            } else if (currentChartMode.startsWith('tag_')) {
-                const tagToFind = currentChartMode.replace('tag_', '').toLowerCase();
-                filtered = filtered.filter(item => item.tags && item.tags.map(t => t.toLowerCase()).includes(tagToFind));
-            }
-
-            currentFilteredLevels = filtered;
-            currentPage = 1;
-            renderPage();
+        if (modal) {
+            modal.style.display =
+                'flex';
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
